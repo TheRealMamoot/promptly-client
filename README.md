@@ -1,1 +1,1 @@
-# promptly-client
+# promptly - frontend (client)
