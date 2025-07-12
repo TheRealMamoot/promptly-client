@@ -1,0 +1,33 @@
+<svg
+  width="200"
+  height="60"
+  viewBox="0 0 200 60"
+  xmlns="http://www.w3.org/2000/svg"
+  fill="none"
+>
+  <style>
+    .text {
+      font-family: "Quicksand", sans-serif;
+      font-size: 22px;
+      fill: #9cdcfe;
+    }
+    .bubble {
+      fill: #9cdcfe;
+    }
+    .flash {
+      fill: white;
+    }
+  </style>
+
+  <!-- Chat Bubble -->
+  <g transform="translate(0, 5)">
+    <rect x="5" y="0" width="40" height="40" rx="10" class="bubble" />
+    <polygon points="20,42 28,40 18,34" class="bubble" />
+
+    <!-- Flash Icon -->
+    <polygon points="22,10 26,20 20,20 24,30" class="flash" />
+  </g>
+
+  <!-- Brand Text -->
+  <text x="60" y="35" class="text">Promptly</text>
+</svg>
