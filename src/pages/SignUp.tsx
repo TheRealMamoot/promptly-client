@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { api } from '../api/axios';
 import GoogleIcon from '../assets/google.svg';
+import { api, API_ROUTES } from '../config/api';
 import { SIGNUP_TEXT } from '../constants/text';
 import { UserSchema } from '../validation/userSchema';
 import './SignUp.css';
@@ -33,9 +33,9 @@ function SignUp() {
     }
   };
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setApiError('');
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setApiError('');
 
   // Ensure all fields are treated as touched
   setTouched({
@@ -58,7 +58,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   }
 
   try {
-    await api.post('/register', {
+    await api.post(API_ROUTES.REGISTER, {
       name: formData.name,
       email: formData.email,
       password: formData.password,
@@ -68,7 +68,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     console.error('Signup error:', error);
     setApiError(SIGNUP_TEXT.alerts.failure);
   }
-};
+  };
 
   const renderError = (field: string) => {
     return touched[field] && errors[field] ? (

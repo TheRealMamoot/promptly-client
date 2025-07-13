@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { api } from '../api/axios';
+import { api, API_ROUTES } from '../config/api';
 import { SIGNUP_TEXT } from '../constants/text';
 import { LoginSchema } from '../validation/userSchema';
 import './SignUp.css';
@@ -41,7 +41,7 @@ function Login() {
     }
 
     try {
-        await api.post('/login', {
+        await api.post(API_ROUTES.LOGIN, {
         email: formData.email,
         password: formData.password,
         });
