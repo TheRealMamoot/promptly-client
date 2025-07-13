@@ -27,8 +27,14 @@
   transition: background-color 0.2s ease-in-out;
 }
 
+.button--small {
+  padding: 10px 14px;
+  font-size: 0.875rem;
+  border-radius: 8px;
+}
+
 .button:hover {
-  background-color: #01a2ff;
+  background-color: #0da6fe;
 }
 
 /* Navbar styles */
