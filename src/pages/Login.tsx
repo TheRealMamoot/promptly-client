@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api, API_ROUTES } from '../config/api';
-import { SIGNUP_TEXT } from '../constants/text';
+import { LOGIN_TEXT, SIGNUP_TEXT } from '../constants/text';
 import { LoginSchema } from '../validation/userSchema';
 import './SignUp.css';
 
@@ -40,14 +40,24 @@ function Login() {
         return;
     }
 
-    try {
-        await api.post(API_ROUTES.LOGIN, {
-        email: formData.email,
-        password: formData.password,
+  try {
+        const response = await api.post(API_ROUTES.LOGIN, {
+          email: formData.email,
+          password: formData.password,
         });
-    } catch (error: any) {
-        setApiError('Login failed. Please try again.');
-    }
+        console.log(LOGIN_TEXT.logs.success, response.data);
+
+      } catch (error: any) {
+        console.error(LOGIN_TEXT.logs.failure, error);
+
+        if (error.response?.status === 401) {
+          setApiError(LOGIN_TEXT.alerts.invalidPassword);
+        } else if (error.response?.status === 404) {
+          setApiError(LOGIN_TEXT.alerts.userNotFound);
+        } else {
+          setApiError(LOGIN_TEXT.alerts.failure);
+        }
+      }
     };
 
   const renderError = (field: string) =>

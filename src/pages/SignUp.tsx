@@ -58,15 +58,31 @@ function SignUp() {
   }
 
   try {
-    await api.post(API_ROUTES.REGISTER, {
+    const response = await api.post(API_ROUTES.REGISTER, {
       name: formData.name,
       email: formData.email,
       password: formData.password,
     });
+
+    console.log(SIGNUP_TEXT.logs.success, response.data);
     setFormData({ name: '', email: '', password: '', confirmPassword: '' });
+
   } catch (error: any) {
-    console.error('Signup error:', error);
-    setApiError(SIGNUP_TEXT.alerts.failure);
+    console.error(SIGNUP_TEXT.logs.failure, error);
+
+    if (error.response) {
+      const status = error.response.status;
+
+      if (status === 409) {
+        setApiError(SIGNUP_TEXT.alerts.conflict);
+      } else if (status === 400) {
+        setApiError(SIGNUP_TEXT.alerts.invalid);
+      } else {
+        setApiError(SIGNUP_TEXT.alerts.server);
+      }
+    } else {
+      setApiError(SIGNUP_TEXT.alerts.network);
+    }
   }
   };
 
