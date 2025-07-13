@@ -1,3 +1,11 @@
+.signup-page {
+  position: relative;
+  min-height: 100vh;
+  background-color: #f8fbfd;
+  margin-left: 20px;
+  margin-top: 20px;
+}
+
 .signup-wrapper {
   display: flex;
   justify-content: center;
@@ -22,6 +30,13 @@
   font-weight: 700;
   margin-bottom: 0.5rem;
   color: #1e1e1e;
+}
+
+.signup-title-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 700;
+  font-family: var(--main-font);
 }
 
 .signup-subtitle {
@@ -62,6 +77,11 @@
 
 .signup-form input::placeholder {
   color: #9ca3af;
+}
+
+.login-title {
+  margin-bottom: 1.5rem;
+  margin-top: auto;
 }
 
 .button {

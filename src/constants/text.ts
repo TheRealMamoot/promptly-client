@@ -11,7 +11,7 @@ export const LANDING_TEXT = {
 };
 
 export const SIGNUP_TEXT = {
-  title: "Start Promptly!",
+  title: "Promptly!",
   subtitle: "Let's get started with your free account.",
   button: "Sign Up",
   placeholders: {

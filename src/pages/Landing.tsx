@@ -1,5 +1,7 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../App.css';
+import LogoLarge from '../assets/promptly.png';
+import LogoTitle from '../components/LogoTitle';
 import { LANDING_TEXT, NAV_TEXT } from '../constants/text';
 
 function Landing() {
@@ -8,9 +10,13 @@ function Landing() {
   return (
     <>
       <nav className="navbar">
-        <div className="logo">{LANDING_TEXT.title}</div>
+        <LogoTitle />
         <ul className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <li><a href="#">{NAV_TEXT.login}</a></li>
+          <li>
+            <Link to="/login" className="nav-link">
+              {NAV_TEXT.login}
+            </Link>
+          </li>
           <li>
             <button className="button button--small" onClick={() => navigate('/signup')}>
               {NAV_TEXT.getStarted}
@@ -20,7 +26,10 @@ function Landing() {
       </nav>
 
       <div className="landing">
-        <h1 className="title">{LANDING_TEXT.title}</h1>
+        <div className="logo-large-container">
+          <img src={LogoLarge} alt="Promptly logo" className="logo-image-large" />
+          <h1 className="landing-title">Promptly</h1>
+        </div>
         <p className="subtitle">
           {LANDING_TEXT.subtitleStart}
           <strong>{LANDING_TEXT.subtitleBold}</strong>.

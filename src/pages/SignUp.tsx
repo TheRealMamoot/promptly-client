@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { api } from '../api/axios';
 import GoogleIcon from '../assets/google.svg';
 import { SIGNUP_TEXT } from '../constants/text';
@@ -32,34 +33,42 @@ function SignUp() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setApiError('');
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setApiError('');
 
-    const result = UserSchema.safeParse(formData);
-    if (!result.success) {
-      const fieldErrors = result.error.flatten().fieldErrors;
-      setErrors(fieldErrors as Record<string, string>);
-      return;
-    }
+  // Ensure all fields are treated as touched
+  setTouched({
+    name: true,
+    email: true,
+    password: true,
+    confirmPassword: true,
+  });
 
-    if (formData.password !== formData.confirmPassword) {
-      setErrors({ confirmPassword: SIGNUP_TEXT.alerts.mismatch });
-      return;
-    }
+  const result = UserSchema.safeParse(formData);
+  if (!result.success) {
+    const fieldErrors = result.error.flatten().fieldErrors;
+    setErrors(fieldErrors as Record<string, string>);
+    return;
+  }
 
-    try {
-      await api.post('/register', {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-      });
-      setFormData({ name: '', email: '', password: '', confirmPassword: '' });
-    } catch (error: any) {
-      console.error('Signup error:', error);
-      setApiError(SIGNUP_TEXT.alerts.failure);
-    }
-  };
+  if (formData.password !== formData.confirmPassword) {
+    setErrors({ confirmPassword: SIGNUP_TEXT.alerts.mismatch });
+    return;
+  }
+
+  try {
+    await api.post('/register', {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+    });
+    setFormData({ name: '', email: '', password: '', confirmPassword: '' });
+  } catch (error: any) {
+    console.error('Signup error:', error);
+    setApiError(SIGNUP_TEXT.alerts.failure);
+  }
+};
 
   const renderError = (field: string) => {
     return touched[field] && errors[field] ? (
@@ -72,11 +81,14 @@ function SignUp() {
   };
 
   return (
+    <>
     <div className="signup-wrapper">
       <div className="signup-tab">
-        <h2 className="signup-title">{SIGNUP_TEXT.title}</h2>
+        {/* <h2 className="signup-title">Start {SIGNUP_TEXT.title}</h2> */}
+        <h2 className="signup-title">
+          Start <a href="/" className="signup-title-link">{SIGNUP_TEXT.title}</a>
+        </h2>
         <p className="signup-subtitle">{SIGNUP_TEXT.subtitle}</p>
-
         {apiError && (
           <div className="form-error-box form-error-top">
             {apiError}
@@ -135,7 +147,7 @@ function SignUp() {
 
         <div className="signup-footer">
           <p>
-            Already have an account? <a href="#">Log In</a>
+            Already have an account? <Link to="/login">Log In</Link>
           </p>
           <div className="divider">
             <span>or</span>
@@ -150,6 +162,7 @@ function SignUp() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 
