@@ -1,4 +1,3 @@
-/* Layout containers */
 .landing {
   text-align: center;
   padding: 4rem 2rem;
@@ -69,4 +68,41 @@
 
 .nav-links a:hover {
   color: var(--primary-color);
+}
+
+.logo-large-container {
+  display: flex;
+  align-items: center;      /* aligns image + text vertically */
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.logo-image-large {
+  height: 60px;
+  width: auto;
+  display: inline-block;
+}
+
+.landing-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin: 0;
+  line-height: 1; /* avoid extra vertical spacing */
+  font-family: var(--main-font);
+  display: inline-block;
+}
+
+.logo-image-small {
+  height: 28px;
+}
+
+a:focus,
+a:focus-visible,
+button:focus,
+button:focus-visible,
+img:focus {
+  outline: none !important;
+  box-shadow: none !important;
 }
