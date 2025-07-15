@@ -1,6 +1,7 @@
 export const NAV_TEXT = {
   login: "Login",
   getStarted: "Get Started",
+  signout: "Sign Out",
 };
 
 export const LANDING_TEXT = {

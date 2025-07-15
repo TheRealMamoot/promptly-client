@@ -72,7 +72,7 @@
 
 .logo-large-container {
   display: flex;
-  align-items: center;      /* aligns image + text vertically */
+  align-items: center;    
   justify-content: center;
   gap: 12px;
   margin-bottom: 1.5rem;
