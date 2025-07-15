@@ -1,11 +1,14 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { api, API_ROUTES } from '../config/api';
 import { LOGIN_TEXT, SIGNUP_TEXT } from '../constants/text';
 import { LoginSchema } from '../validation/userSchema';
 import './SignUp.css';
 
+// todo: auto navigation from login to home if already logged in
+
 function Login() {
+  const navigate = useNavigate(); 
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [apiError, setApiError] = useState('');
@@ -40,12 +43,15 @@ function Login() {
         return;
     }
 
-  try {
-        const response = await api.post(API_ROUTES.LOGIN, {
-          email: formData.email,
-          password: formData.password,
-        });
-        console.log(LOGIN_TEXT.logs.success, response.data);
+    try {
+      await api.post(API_ROUTES.LOGIN, {
+        email: formData.email,
+        password: formData.password,
+      });
+          
+        setFormData({ email: '', password: '' });
+
+        navigate('/home'); 
 
       } catch (error: any) {
         console.error(LOGIN_TEXT.logs.failure, error);

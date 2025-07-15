@@ -4,7 +4,6 @@ export const UserSchema = z
   .object({
     name: z
       .string()
-      .min(1, "Full name is required")
       .refine((val) => /^[a-zA-Z]+(?: [a-zA-Z]+)+$/.test(val.trim()), {
         message: "Full name is required",
       }),
@@ -15,19 +14,11 @@ export const UserSchema = z
   .superRefine((data, ctx) => {
     const { password, confirmPassword } = data;
 
-    if (!/[A-Z]/.test(password)) {
+    if (!/[A-Z]/.test(password) || !/[a-z]/.test(password)) {
       ctx.addIssue({
         path: ["password"],
         code: z.ZodIssueCode.custom,
-        message: "Password must include at least one uppercase letter. ",
-      });
-    }
-
-    if (!/[a-z]/.test(password)) {
-      ctx.addIssue({
-        path: ["password"],
-        code: z.ZodIssueCode.custom,
-        message: "Password must include at least one lowercase letter. ",
+        message: "Password must contain both uppercase and lowercase letters. ",
       });
     }
 
