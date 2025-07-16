@@ -105,15 +105,32 @@ export default function Home() {
   };
   const handleLibrary = () => console.log("Library icon clicked");
 
-  const confirmSave = () => {
+  const confirmSave = async () => {
+    setShowSaveConfirmation(false);
+
+  try {
+    const response = await api.post(API_ROUTES.PROMPTS, {
+      title: title,
+      text: message,
+      favorite: isFavorited,
+    });
+
+    console.log('Prompt saved successfully:', response.data);
+
+    setTitle('');
+    setMessage('');
+    setIsFavorited(false);
+
+    // short delay for smoother trasition
     setTimeout(() => {
-        setShowSaveConfirmation(false);
-        setShowSuccessMessage(true);
-        setTitle('');
-        setMessage('');
-        setIsFavorited(false);
-    }, 200);
-  };
+      setShowSuccessMessage(true);
+    }, 100);
+
+  } catch (error: any) {
+    console.error('Error saving prompt:', error);
+    alert('Failed to save prompt. Please try again.');
+  }
+};
 
   const cancelSave = () => {
     setShowSaveConfirmation(false);
