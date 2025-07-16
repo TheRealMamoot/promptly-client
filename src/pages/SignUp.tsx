@@ -37,7 +37,6 @@ function SignUp() {
     e.preventDefault();
     setApiError('');
 
-  // Ensure all fields are treated as touched
   setTouched({
     name: true,
     email: true,
