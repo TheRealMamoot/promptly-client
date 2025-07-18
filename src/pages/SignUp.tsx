@@ -1,10 +1,10 @@
+import '@styles/SignUp.css';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import GoogleIcon from '../assets/google.svg';
 import { api, API_ROUTES } from '../config/api';
 import { SIGNUP_TEXT } from '../constants/text';
 import { UserSchema } from '../validation/userSchema';
-import './SignUp.css';
 
 function SignUp() {
   const [formData, setFormData] = useState({

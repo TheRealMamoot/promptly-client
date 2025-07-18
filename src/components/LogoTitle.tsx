@@ -1,6 +1,6 @@
+import "@styles/LogoTitle.css";
 import { Link } from "react-router-dom";
 import Logo from "../assets/promptly.png";
-import "./LogoTitle.css";
 
 function LogoTitle() {
   return (

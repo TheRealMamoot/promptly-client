@@ -1,0 +1,127 @@
+/* Detail Modal Overlay */
+.detail-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001; 
+    padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+}
+
+/* Detail Modal Content */
+.detail-modal-content {
+    background-color: #ffffff; 
+    border-radius: 1rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15); 
+    width: 90%;
+    max-width: 500px;
+    min-width: 300px;
+    max-height: 80vh;
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; 
+    font-family: var(--main-font);
+
+    transform: scale(0.9);
+    opacity: 0;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+/* Animation Classes */
+.detail-modal-overlay.detail-modal-enter {
+    opacity: 1;
+    visibility: visible;
+}
+
+.detail-modal-content.detail-modal-enter {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.detail-modal-overlay.detail-modal-exit {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.detail-modal-content.detail-modal-exit {
+    transform: scale(0.9);
+    opacity: 0;
+}
+
+/* Header */
+.detail-modal-header {
+    padding: 15px 20px 10px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Main Content Area */
+.detail-main-content-area {
+    padding: 20px;
+    overflow-y: auto;
+    flex-grow: 1;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    margin: 0 20px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.detail-prompt-title {
+    margin: 0 0 10px 0;
+    font-size: 1.2rem;
+    color: #1e1e1e;
+    font-weight: 700;
+    text-align: left;
+}
+
+.detail-prompt-text {
+    margin: 0; 
+    font-size: 0.95rem;
+    color: #333;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    text-align: left;
+}
+
+/* Footer */
+.detail-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px 20px 15px;
+    margin-top: 10px;
+}
+
+.detail-modal-close-button {
+    background-color: #e0e0e0;
+    color: #333;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    font-family: var(--main-font);
+    outline: none;
+}
+
+.detail-modal-close-button:hover {
+    background-color: #d0d0d0;
+    transform: translateY(-1px);
+}

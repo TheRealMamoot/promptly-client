@@ -1,9 +1,9 @@
+import '@styles/SignUp.css';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api, API_ROUTES } from '../config/api';
 import { LOGIN_TEXT, SIGNUP_TEXT } from '../constants/text';
 import { LoginSchema } from '../validation/userSchema';
-import './SignUp.css';
 
 // todo: auto navigation from login to home if already logged in
 
