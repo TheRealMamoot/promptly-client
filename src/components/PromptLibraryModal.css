@@ -1,3 +1,5 @@
+/* PromptLibraryModal.css */
+
 /* Modal Overlay */
 .modal-overlay {
     position: fixed;
@@ -5,25 +7,25 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6); 
+    background-color: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; 
-    padding: 20px; 
+    z-index: 1000;
+    padding: 20px;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.2s ease-out, visibility 0.2s ease-out; /* Fade in/out overlay */
+    transition: opacity 0.3s ease-out, visibility 0.3s ease-out; /* Fade in/out overlay */
 }
 
 /* Modal Content */
 .modal-content {
     background-color: #ffffff;
-    border-radius: 1rem; 
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05); 
-    width: 90%; 
-    max-width: 600px;
-    max-height: 90vh;
+    border-radius: 1rem;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
+    width: 90%;
+    max-width: 700px; /* Kept max-width at 700px as per last update */
+    height: 900px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -31,7 +33,7 @@
 
     transform: scale(0.95);
     opacity: 0;
-    transition: transform 0.2s ease-out, opacity 0.2s ease-out; /* Main modal transition */
+    transition: transform 0.31s ease-out, opacity 0.3s ease-out; /* Main modal transition */
 }
 
 /* Animation Classes (Controlled by TSX) */
@@ -55,21 +57,13 @@
   opacity: 0;
 }
 
-/* .modal-content.modal-exit .modal-header > *,
-.modal-content.modal-exit .modal-body > *, 
-.modal-content.modal-exit .modal-footer > * { 
-    opacity: 0;
-    transition: opacity 0s; 
-    pointer-events: none;
-} */
-
 /* Modal Header */
 .modal-header {
     display: flex;
     align-items: center;
     padding: 15px 20px 10px;
     border-bottom: 1px solid #e2e8f0;
-    background-color: #f8f8f8; 
+    background-color: #f8f8f8;
 }
 
 /* Search Input */
@@ -92,9 +86,8 @@
 
 .modal-search-input:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); 
+    box-shadow: 0 0 0 1px rgba(70, 189, 253, 0.3);
 }
-
 
 /* Modal Body */
 .modal-body {
@@ -104,12 +97,13 @@
 }
 
 .error-message {
-    color: #d9534f;
-    background-color: #f2dede;
-    border: 1px solid #ebccd1;
-    padding: 10px 15px;
-    border-radius: 0.5rem;
-    margin-bottom: 15px;
+  color: var(--error-color);
+  font-size: 0.75rem;
+  margin-top: -6px;
+  margin-bottom: -6px;
+  text-align: left;
+  padding-left: 2px;
+  line-height: 1.1;
 }
 
 /* Prompt List and Items */
@@ -125,6 +119,7 @@
     padding: 15px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative; /* Added for absolute positioning of timestamp */
 }
 
 .prompt-item:hover {
@@ -132,11 +127,12 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Prompt Item Header - Adjusted for left alignment and icon grouping */
 .prompt-item-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
+    align-items: flex-start;
+    margin-bottom: 5px; /* Reduced margin between header and paragraph */
 }
 
 .prompt-item-header h3 {
@@ -144,27 +140,76 @@
     font-size: 1.05rem;
     color: #333;
     font-weight: 600;
-
+    text-align: left;
+    flex-grow: 1;
 }
+
+/* Prompt Actions - New container for icons */
+.prompt-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Action Icons (Clipboard and Favorite) */
+.action-icon {
+    font-size: 1.1rem;
+    opacity: 0.9; /* Base opacity for all icons */
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.action-icon.copy-icon {
+    color: #888; /* Lighter default color for copy icon */
+    cursor: pointer;
+    opacity: 0.4; /* Reduced opacity for copy icon */
+}
+
+.action-icon.copy-icon:hover {
+    color: #000000; /* Copy icon hover color to black */
+    opacity: 0.5; /* Increase opacity on hover */
+}
+
+.action-icon.favorite-icon {
+    color: #ccc; /* Default favorite icon color */
+    cursor: default;
+}
+
+.action-icon.favorite-icon.favorited {
+    color: gold; /* Favorited icon color */
+    opacity: 1; /* Favorited icon should be fully opaque */
+}
+
+/* New style for copy tick icon */
+.action-icon.copy-tick-icon {
+    color: #28a745; /* Green color for tick */
+    opacity: 0.5; /* Full opacity for tick */
+    cursor: default; /* Not clickable */
+}
+
+
+/* Prompt Item Paragraph - Adjusted for reduced margin and left alignment */
 .prompt-item p {
     font-size: 0.85rem;
     color: #555;
     line-height: 1.5;
-    margin-bottom: 0;
+    margin-bottom: 15px; /* Add margin to separate from timestamp */
+    text-align: left;
+    font-style: normal;
 }
 
-.favorite-icon {
-    color: #ccc;
-    font-size: 1.1rem; 
+/* Prompt Timestamp */
+.prompt-timestamp {
+    position: absolute;
+    bottom: 10px;
+    right: 15px;
+    font-size: 0.75rem;
+    color: var(--primary-color);
+    opacity: 0.9;
 }
 
-.favorite-icon.favorited {
-    color: gold;
-}
 
-
-/* Loading/Empty States */
-.modal-body p {
+/* Loading/Empty States - This rule applies to messages like "Loading prompts..." and "No prompts found..." */
+.modal-body > p {
     text-align: center;
     color: #777;
     margin-top: 20px;
@@ -187,24 +232,24 @@
     border-radius: 0 0 1rem 1rem;
 }
 
-/* Modal Footer (New) */
+/* Modal Footer */
 .modal-footer {
     display: flex;
-    justify-content: flex-end; 
-    gap: 6px; 
-    padding: 10px 15px; 
-    border-top: 1px solid #e2e8f0; 
-    background-color: #f8f8f8; 
+    justify-content: space-between;
+    gap: 6px;
+    padding: 10px 15px;
+    border-top: 1px solid #e2e8f0;
+    background-color: #f8f8f8;
 }
 
 .modal-close-button,
 .modal-manage-button {
-    background-color: #e0e0e0; 
-    color: #333; 
-    padding: 0.5rem 1rem; 
+    background-color: #e0e0e0;
+    color: #333;
+    padding: 0.5rem 1rem;
     border: none;
-    border-radius: 0.5rem; 
-    font-size: 0.85rem; 
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease;
@@ -219,10 +264,10 @@
 }
 
 .modal-manage-button {
-    background-color: var(--primary-color); 
+    background-color: var(--primary-color);
     color: white;
 }
 
 .modal-manage-button:hover {
-    background-color: #0da6fe; 
+    background-color: #0da6fe;
 }

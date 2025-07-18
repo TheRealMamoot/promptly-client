@@ -1,7 +1,10 @@
+// PromptLibraryModal.tsx
 import React, { useEffect, useState } from 'react';
 import { FaRegStar, FaStar } from 'react-icons/fa';
+import { FiCheck, FiCopy } from 'react-icons/fi'; // Import FiCheck icon
 import type { KeyedMutator } from 'swr';
 import type { Prompt } from '../utils/api';
+import { formatTimeAgo } from '../utils/timeFormatter';
 import './PromptLibraryModal.css';
 
 interface PromptLibraryModalProps {
@@ -20,11 +23,12 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
   prompts,
   error,
   isLoading,
-  isValidating
+  isValidating,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [animationClass, setAnimationClass] = useState('');
   const [isAnimating, setIsAnimating] = useState(false);
+  const [showCopyTick, setShowCopyTick] = useState<string | null>(null); // State to track which prompt's copy icon shows tick
 
   useEffect(() => {
     if (isOpen) {
@@ -39,6 +43,33 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
     }
   }, [isOpen]);
 
+  // New useEffect for handling Escape key press
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen, onClose]);
+
+  // Effect to hide copy tick after a delay
+  useEffect(() => {
+    if (showCopyTick) {
+      const timer = setTimeout(() => {
+        setShowCopyTick(null);
+      }, 1500); // 1.5 seconds, similar to Home.tsx
+      return () => clearTimeout(timer);
+    }
+  }, [showCopyTick]);
+
   const filteredPrompts = prompts?.filter(prompt =>
     prompt.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     prompt.text.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -46,6 +77,15 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
     (prompt.category && prompt.category.toLowerCase().includes(searchQuery.toLowerCase())) ||
     (prompt.tags && prompt.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())))
   ) || [];
+
+  const sortedPrompts = [...filteredPrompts].sort((a, b) => {
+    if (a.favorite && !b.favorite) return -1;
+    if (!a.favorite && b.favorite) return 1;
+
+    const dateA = new Date(a.createdAt).getTime();
+    const dateB = new Date(b.createdAt).getTime();
+    return dateB - dateA;
+  });
 
   let noPromptsMessage = '';
   const hasPromptsInLibrary = prompts && prompts.length > 0;
@@ -65,11 +105,32 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
     alert("Manage functionality coming soon!");
   };
 
+  // New handleCopy function for individual prompts
+  const handleCopyPrompt = async (prompt: Prompt) => {
+    try {
+      const textToCopy = `Title: ${prompt.title}\nPrompt: ${prompt.text}`;
+      const textarea = document.createElement('textarea');
+      textarea.value = textToCopy;
+      textarea.style.position = 'fixed';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+
+      setShowCopyTick(prompt.id); // Set the ID of the prompt whose icon should show a tick
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+      alert('Failed to copy text to clipboard.');
+    }
+  };
+
   if (!isOpen && !isAnimating) {
     return null;
   }
 
-  const showContent = !isLoading && !error && filteredPrompts.length > 0;
+  const showContent = !isLoading && !error && sortedPrompts.length > 0;
+  const MAX_PROMPT_TEXT_LENGTH = 80;
 
   return (
     <div className={`modal-overlay ${animationClass}`}>
@@ -98,17 +159,34 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
 
           {showContent && (
             <div className="prompt-list">
-              {filteredPrompts.map((prompt) => (
+              {sortedPrompts.map((prompt) => (
                 <div key={prompt.id} className="prompt-item">
                   <div className="prompt-item-header">
                     <h3>{prompt.title}</h3>
-                    {prompt.favorite ? (
-                      <FaStar className="favorite-icon favorited" />
-                    ) : (
-                      <FaRegStar className="favorite-icon" />
-                    )}
+                    <div className="prompt-actions">
+                        {showCopyTick === prompt.id ? ( // Conditionally render tick or copy icon
+                            <FiCheck className="action-icon copy-tick-icon" />
+                        ) : (
+                            <FiCopy
+                                className="action-icon copy-icon"
+                                onClick={() => handleCopyPrompt(prompt)} // Add onClick handler
+                            />
+                        )}
+                        {prompt.favorite ? (
+                            <FaStar className="action-icon favorite-icon favorited" />
+                        ) : (
+                            <FaRegStar className="action-icon favorite-icon" />
+                        )}
+                    </div>
                   </div>
-                  <p>{prompt.text.substring(0, 150)}{prompt.text.length > 150 ? '...' : ''}</p>
+                  <p>
+                    {prompt.text.length > MAX_PROMPT_TEXT_LENGTH
+                      ? prompt.text.substring(0, MAX_PROMPT_TEXT_LENGTH) + '...'
+                      : prompt.text}
+                  </p>
+                  <div className="prompt-timestamp">
+                    {formatTimeAgo(prompt.createdAt)}
+                  </div>
                 </div>
               ))}
             </div>
