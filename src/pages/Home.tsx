@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import LibraryIcon from '../assets/lib.svg';
 import SaveIcon from '../assets/save.svg';
 import LogoTitle from '../components/LogoTitle';
+import PromptLibraryModal from '../components/PromptLibraryModal';
 import { api, API_ROUTES } from '../config/api';
 
 //todo: add delay for warning and success messages after pop up
@@ -22,6 +23,7 @@ export default function Home() {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showEmptyPromptWarning, setShowEmptyPromptWarning] = useState(false);
   const [showCopyTick, setShowCopyTick] = useState(false);
+  const [isLibraryModalOpen, setIsLibraryModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -70,6 +72,7 @@ export default function Home() {
     try {
       await api.post(API_ROUTES.LOGOUT);
       setUserInfo(null);
+      // Removed globalMutate calls as SWR is no longer used
       navigate('/login');
     } catch (error) {
       console.error('Error during logout API call:', error);
@@ -90,7 +93,15 @@ export default function Home() {
   const handleCopy = async () => {
     try {
       const textToCopy = `Title: ${title}\nPrompt: ${message}`;
-      await navigator.clipboard.writeText(textToCopy); 
+      const textarea = document.createElement('textarea');
+      textarea.value = textToCopy;
+      textarea.style.position = 'fixed';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+
       setShowCopyTick(true);
       setActiveTooltip(null);
     } catch (err) {
@@ -103,7 +114,11 @@ export default function Home() {
   const handleFavorite = () => {
     setIsFavorited(prev => !prev);
   };
-  const handleLibrary = () => console.log("Library icon clicked");
+
+  const handleLibrary = () => {
+    setIsLibraryModalOpen(true);
+    setActiveTooltip(null);
+  };
 
   const confirmSave = async () => {
     setShowSaveConfirmation(false);
@@ -120,6 +135,9 @@ export default function Home() {
     setTitle('');
     setMessage('');
     setIsFavorited(false);
+
+    // No SWR mutate call here as SWR is removed.
+    // The library modal will not automatically update after save.
 
     // short delay for smoother trasition
     setTimeout(() => {
@@ -263,6 +281,11 @@ const renderTooltip = (id: string, text: string) => (
           Please enter the title and the prmopt before saving.
         </div>
       )}
+
+      <PromptLibraryModal
+        isOpen={isLibraryModalOpen}
+        onClose={() => setIsLibraryModalOpen(false)}
+      />
     </div>
   );
 }

@@ -1,0 +1,228 @@
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; 
+    padding: 20px; 
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease-out, visibility 0.2s ease-out; /* Fade in/out overlay */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #ffffff;
+    border-radius: 1rem; 
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05); 
+    width: 90%; 
+    max-width: 600px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: var(--main-font);
+
+    transform: scale(0.95);
+    opacity: 0;
+    transition: transform 0.2s ease-out, opacity 0.2s ease-out; /* Main modal transition */
+}
+
+/* Animation Classes (Controlled by TSX) */
+.modal-overlay.modal-enter {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content.modal-enter {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.modal-overlay.modal-exit {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.modal-content.modal-exit {
+  transform: scale(0.95);
+  opacity: 0;
+}
+
+/* .modal-content.modal-exit .modal-header > *,
+.modal-content.modal-exit .modal-body > *, 
+.modal-content.modal-exit .modal-footer > * { 
+    opacity: 0;
+    transition: opacity 0s; 
+    pointer-events: none;
+} */
+
+/* Modal Header */
+.modal-header {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px 10px;
+    border-bottom: 1px solid #e2e8f0;
+    background-color: #f8f8f8; 
+}
+
+/* Search Input */
+.modal-search-input {
+    flex-grow: 1;
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 0.5rem;
+    font-size: 0.95rem;
+    color: #333;
+    background-color: #fff;
+    font-family: var(--main-font);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.modal-search-input::placeholder {
+    color: #9ca3af;
+}
+
+.modal-search-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); 
+}
+
+
+/* Modal Body */
+.modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.error-message {
+    color: #d9534f;
+    background-color: #f2dede;
+    border: 1px solid #ebccd1;
+    padding: 10px 15px;
+    border-radius: 0.5rem;
+    margin-bottom: 15px;
+}
+
+/* Prompt List and Items */
+.prompt-list {
+    display: grid;
+    gap: 15px;
+}
+
+.prompt-item {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 0.75rem;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.prompt-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.prompt-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.prompt-item-header h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    color: #333;
+    font-weight: 600;
+
+}
+.prompt-item p {
+    font-size: 0.85rem;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 0;
+}
+
+.favorite-icon {
+    color: #ccc;
+    font-size: 1.1rem; 
+}
+
+.favorite-icon.favorited {
+    color: gold;
+}
+
+
+/* Loading/Empty States */
+.modal-body p {
+    text-align: center;
+    color: #777;
+    margin-top: 20px;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+.revalidating-indicator {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 5px 15px;
+    background-color: #e0f7fa;
+    color: #00796b;
+    text-align: center;
+    font-size: 0.8rem;
+    border-top: 1px solid #b2ebf2;
+    z-index: 10;
+    border-radius: 0 0 1rem 1rem;
+}
+
+/* Modal Footer (New) */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end; 
+    gap: 6px; 
+    padding: 10px 15px; 
+    border-top: 1px solid #e2e8f0; 
+    background-color: #f8f8f8; 
+}
+
+.modal-close-button,
+.modal-manage-button {
+    background-color: #e0e0e0; 
+    color: #333; 
+    padding: 0.5rem 1rem; 
+    border: none;
+    border-radius: 0.5rem; 
+    font-size: 0.85rem; 
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    font-family: var(--main-font);
+    outline: none;
+}
+
+.modal-close-button:hover,
+.modal-manage-button:hover {
+    background-color: #d0d0d0;
+    transform: translateY(-1px);
+}
+
+.modal-manage-button {
+    background-color: var(--primary-color); 
+    color: white;
+}
+
+.modal-manage-button:hover {
+    background-color: #0da6fe; 
+}
