@@ -3,13 +3,14 @@ import { useEffect, useState } from 'react';
 import { FaRegStar, FaStar } from 'react-icons/fa';
 import { FiCheck, FiCopy } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import useSWR, { mutate as globalMutate } from 'swr';
 import LibraryIcon from '../assets/lib.svg';
 import SaveIcon from '../assets/save.svg';
 import LogoTitle from '../components/LogoTitle';
 import PromptLibraryModal from '../components/PromptLibraryModal';
 import { api, API_ROUTES } from '../config/api';
-
-//todo: add delay for warning and success messages after pop up
+import type { Prompt } from '../utils/api';
+import { fetcher } from '../utils/api';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -24,6 +25,22 @@ export default function Home() {
   const [showEmptyPromptWarning, setShowEmptyPromptWarning] = useState(false);
   const [showCopyTick, setShowCopyTick] = useState(false);
   const [isLibraryModalOpen, setIsLibraryModalOpen] = useState(false);
+
+  const {
+    data: prompts,
+    error: promptsError,
+    isLoading: promptsLoading,
+    isValidating: promptsValidating,
+    mutate: promptsMutate
+  } = useSWR<Prompt[]>(
+    userInfo ? API_ROUTES.PROMPTS : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+      revalidateOnMount: true,
+    }
+  );
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -72,11 +89,12 @@ export default function Home() {
     try {
       await api.post(API_ROUTES.LOGOUT);
       setUserInfo(null);
-      // Removed globalMutate calls as SWR is no longer used
+      globalMutate(API_ROUTES.PROMPTS, null, false);
       navigate('/login');
     } catch (error) {
       console.error('Error during logout API call:', error);
       setUserInfo(null);
+      globalMutate(API_ROUTES.PROMPTS, null, false);
       navigate('/login');
     }
   };
@@ -108,7 +126,6 @@ export default function Home() {
       console.error('Failed to copy text: ', err);
       alert('Failed to copy text to clipboard.');
     }
-    console.log("Copy icon clicked");
   };
 
   const handleFavorite = () => {
@@ -136,10 +153,8 @@ export default function Home() {
     setMessage('');
     setIsFavorited(false);
 
-    // No SWR mutate call here as SWR is removed.
-    // The library modal will not automatically update after save.
+    promptsMutate();
 
-    // short delay for smoother trasition
     setTimeout(() => {
       setShowSuccessMessage(true);
     }, 100);
@@ -152,7 +167,6 @@ export default function Home() {
 
   const cancelSave = () => {
     setShowSaveConfirmation(false);
-    console.log("Save cancelled.");
   };
 
   if (loadingUser) {
@@ -285,6 +299,11 @@ const renderTooltip = (id: string, text: string) => (
       <PromptLibraryModal
         isOpen={isLibraryModalOpen}
         onClose={() => setIsLibraryModalOpen(false)}
+        prompts={prompts}
+        error={promptsError}
+        isLoading={promptsLoading}
+        isValidating={promptsValidating}
+        mutate={promptsMutate}
       />
     </div>
   );

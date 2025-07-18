@@ -1,50 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import { FaRegStar, FaStar } from 'react-icons/fa';
-import { api, API_ROUTES } from '../config/api';
-import type { Prompt } from '../utils/fetcher';
+import type { KeyedMutator } from 'swr';
+import type { Prompt } from '../utils/api';
 import './PromptLibraryModal.css';
 
 interface PromptLibraryModalProps {
   isOpen: boolean;
   onClose: () => void;
+  prompts: Prompt[] | undefined;
+  error: any;
+  isLoading: boolean;
+  isValidating: boolean;
+  mutate: KeyedMutator<Prompt[]>;
 }
 
-const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({ isOpen, onClose }) => {
+const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
+  isOpen,
+  onClose,
+  prompts,
+  error,
+  isLoading,
+  isValidating
+}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [animationClass, setAnimationClass] = useState('');
   const [isAnimating, setIsAnimating] = useState(false);
-  const [prompts, setPrompts] = useState<Prompt[] | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<any>(null);
 
   useEffect(() => {
     if (isOpen) {
-      setSearchQuery('');
-      setPrompts(undefined);
-      setError(null);
-      setIsLoading(false);
       setIsAnimating(true);
       setAnimationClass('modal-enter');
-
-      const fetchData = async () => {
-        setIsLoading(true);
-        setError(null);
-        try {
-          const response = await api.get(API_ROUTES.PROMPTS);
-          setPrompts(response.data.payload);
-        } catch (err: any) {
-          console.error("Failed to fetch prompts:", err);
-          setError(err);
-          setPrompts([]); 
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      fetchData();
     } else {
       setAnimationClass('modal-exit');
       const timer = setTimeout(() => {
-      setIsAnimating(false);
+        setIsAnimating(false);
       }, 300);
       return () => clearTimeout(timer);
     }
@@ -66,11 +55,12 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({ isOpen, onClose
     if (!hasPromptsInLibrary) {
       noPromptsMessage = 'Your library is empty. Add some prompts to get started!';
     } else if (!hasFilteredResults) {
-      noPromptsMessage = 'No prompts found matching your search. Try a different query!'; 
+      noPromptsMessage = 'No prompts found matching your search. Try a different query!';
     }
   }
 
   const shouldDisplayNoPromptsMessage = (isOpen || isAnimating) && !isLoading && !error && (noPromptsMessage !== '');
+
   const handleManage = () => {
     alert("Manage functionality coming soon!");
   };
@@ -122,6 +112,10 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({ isOpen, onClose
                 </div>
               ))}
             </div>
+          )}
+
+          {isValidating && !isLoading && prompts && prompts.length > 0 && (
+            <div className="revalidating-indicator">Refreshing library...</div>
           )}
         </div>
         <div className="modal-footer">
