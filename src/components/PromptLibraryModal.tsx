@@ -1,11 +1,12 @@
-import '@styles/PromptLibraryModal.css';
-import React, { useEffect, useState } from 'react';
-import { FaRegStar, FaStar } from 'react-icons/fa';
-import { FiCheck, FiCopy } from 'react-icons/fi';
-import type { KeyedMutator } from 'swr';
-import type { Prompt } from '../utils/api';
-import { formatTimeAgo } from '../utils/timeFormatter';
-import PromptDetailModal from './PromptDetailModal';
+import "@styles/PromptLibraryModal.css";
+import React, { useCallback, useEffect, useState } from "react";
+import { FaRegStar, FaStar } from "react-icons/fa";
+import { FiCheck, FiCopy } from "react-icons/fi";
+import type { KeyedMutator } from "swr";
+import { api, API_ROUTES } from "../config/api";
+import type { Prompt } from "../utils/api";
+import { formatTimeAgo } from "../utils/timeFormatter";
+import PromptDetailModal from "./PromptDetailModal";
 
 interface PromptLibraryModalProps {
   isOpen: boolean;
@@ -25,21 +26,27 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
   isLoading,
   mutate,
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [animationClass, setAnimationClass] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [animationClass, setAnimationClass] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
   const [showCopyTick, setShowCopyTick] = useState<string | null>(null);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedPrompt, setSelectedPrompt] = useState<Prompt | null>(null);
+  const [isManaging, setIsManaging] = useState(false);
+  const [selectedPromptIds, setSelectedPromptIds] = useState<
+    Set<string | number>
+  >(new Set());
 
   useEffect(() => {
     if (isOpen) {
       setIsAnimating(true);
-      setAnimationClass('modal-enter');
+      setAnimationClass("modal-enter");
     } else {
-      setAnimationClass('modal-exit');
+      setAnimationClass("modal-exit");
       const timer = setTimeout(() => {
         setIsAnimating(false);
+        setIsManaging(false);
+        setSelectedPromptIds(new Set());
       }, 300);
       return () => clearTimeout(timer);
     }
@@ -47,20 +54,24 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
-    
-      if (event.key === 'Escape' && isOpen && !isDetailModalOpen) {
-        onClose();
+      if (event.key === "Escape" && isOpen && !isDetailModalOpen) {
+        if (isManaging) {
+          setIsManaging(false);
+          setSelectedPromptIds(new Set());
+        } else {
+          onClose();
+        }
       }
     };
 
     if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
+      document.addEventListener("keydown", handleEscape);
     }
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener("keydown", handleEscape);
     };
-  }, [isOpen, onClose, isDetailModalOpen]);
+  }, [isOpen, onClose, isDetailModalOpen, isManaging]);
 
   useEffect(() => {
     if (showCopyTick) {
@@ -71,13 +82,22 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
     }
   }, [showCopyTick]);
 
-  const filteredPrompts = prompts?.filter(prompt =>
-    prompt.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    prompt.text.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (prompt.description && prompt.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (prompt.category && prompt.category.toLowerCase().includes(searchQuery.toLowerCase())) ||
-    (prompt.tags && prompt.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())))
-  ) || [];
+  const filteredPrompts =
+    prompts?.filter(
+      (prompt) =>
+        prompt.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        prompt.text.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (prompt.description &&
+          prompt.description
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())) ||
+        (prompt.category &&
+          prompt.category.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (prompt.tags &&
+          prompt.tags.some((tag) =>
+            tag.toLowerCase().includes(searchQuery.toLowerCase())
+          ))
+    ) || [];
 
   const sortedPrompts = [...filteredPrompts].sort((a, b) => {
     if (a.favorite && !b.favorite) return -1;
@@ -88,42 +108,60 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
     return dateB - dateA;
   });
 
-  let noPromptsMessage = '';
+  let noPromptsMessage = "";
   const hasPromptsInLibrary = prompts && prompts.length > 0;
   const hasFilteredResults = filteredPrompts.length > 0;
 
   if (!isLoading && !error && prompts !== undefined) {
     if (!hasPromptsInLibrary) {
-      noPromptsMessage = 'Your library is empty. Add some prompts to get started!';
+      noPromptsMessage =
+        "Your library is empty. Add some prompts to get started!";
     } else if (!hasFilteredResults) {
-      noPromptsMessage = 'No prompts found matching your search. Try a different query!';
+      noPromptsMessage =
+        "No prompts found matching your search. Try a different query!";
     }
   }
 
-  const shouldDisplayNoPromptsMessage = (isOpen || isAnimating) && !isLoading && !error && (noPromptsMessage !== '');
+  const shouldDisplayNoPromptsMessage =
+    (isOpen || isAnimating) && !isLoading && !error && noPromptsMessage !== "";
 
-  const handleManage = () => {
-    alert("Manage functionality coming soon!");
-  };
+  const handleManage = useCallback(() => {
+    setIsManaging((prev) => !prev);
+    setSelectedPromptIds(new Set());
+  }, []);
 
   const handleCopyPrompt = async (prompt: Prompt) => {
     try {
       const textToCopy = `Title: ${prompt.title}\nPrompt: ${prompt.text}`;
-      const textarea = document.createElement('textarea');
+      const textarea = document.createElement("textarea");
       textarea.value = textToCopy;
-      textarea.style.position = 'fixed';
+      textarea.style.position = "fixed";
       document.body.appendChild(textarea);
       textarea.focus();
       textarea.select();
-      document.execCommand('copy');
+      document.execCommand("copy");
       document.body.removeChild(textarea);
 
       setShowCopyTick(prompt.id);
     } catch (err) {
-      console.error('Failed to copy text: ', err);
-      alert('Failed to copy text to clipboard.');
+      console.error("Failed to copy text: ", err);
+      console.log("Failed to copy text to clipboard.");
     }
   };
+
+  const handleToggleFavorite = useCallback(
+    async (prompt: Prompt) => {
+      try {
+        await api.patch(`${API_ROUTES.PROMPTS}/${prompt.id}`, {
+          favorite: !prompt.favorite,
+        });
+        mutate();
+      } catch (error) {
+        console.error("Error toggling favorite status:", error);
+      }
+    },
+    [mutate]
+  );
 
   const openDetailModal = (prompt: Prompt) => {
     setSelectedPrompt(prompt);
@@ -142,12 +180,40 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
     setSelectedPrompt(updatedPrompt);
   };
 
+  const handlePromptSelection = useCallback((promptId: string | number) => {
+    setSelectedPromptIds((prevSelected) => {
+      const newSelection = new Set(prevSelected);
+      if (newSelection.has(promptId)) {
+        newSelection.delete(promptId);
+      } else {
+        newSelection.add(promptId);
+      }
+      return newSelection;
+    });
+  }, []);
+
+  const handleSelectAll = useCallback(() => {
+    const allPromptIds = new Set(sortedPrompts.map((prompt) => prompt.id));
+    setSelectedPromptIds(allPromptIds);
+  }, [sortedPrompts]);
+
+  const handleDeselectAll = useCallback(() => {
+    setSelectedPromptIds(new Set());
+  }, []);
+
+  const handleDeleteSelected = useCallback(() => {
+    console.log("Deleting selected prompts:", Array.from(selectedPromptIds));
+    setSelectedPromptIds(new Set());
+    setIsManaging(false);
+  }, [selectedPromptIds]);
+
   if (!isOpen && !isAnimating) {
     return null;
   }
 
   const showContent = !isLoading && !error && sortedPrompts.length > 0;
   const MAX_PROMPT_TEXT_LENGTH = 80;
+  const isDeleteButtonDisabled = selectedPromptIds.size === 0;
 
   return (
     <>
@@ -165,52 +231,81 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
           <div className="modal-body">
             {error && (
               <p className="error-message">
-                Failed to load prompts: {error.message?.message || 'Unknown error'}
+                Failed to load prompts:{" "}
+                {error.message?.message || "Unknown error"}
               </p>
             )}
 
             {isLoading && <p>Loading prompts...</p>}
 
-            {shouldDisplayNoPromptsMessage && (
-              <p>{noPromptsMessage}</p>
-            )}
+            {shouldDisplayNoPromptsMessage && <p>{noPromptsMessage}</p>}
 
             {showContent && (
               <div className="prompt-list">
                 {sortedPrompts.map((prompt) => (
                   <div
                     key={prompt.id}
-                    className="prompt-item"
-                    onClick={() => openDetailModal(prompt)}
+                    className={`prompt-item ${isManaging ? "prompt-item-managing" : ""}`}
+                    onClick={
+                      isManaging
+                        ? () => handlePromptSelection(prompt.id)
+                        : () => openDetailModal(prompt)
+                    }
                   >
-                    <div className="prompt-item-header">
-                      <h3>{prompt.title}</h3>
-                      <div className="prompt-actions">
+                    {isManaging && (
+                      <div className="prompt-checkbox-container">
+                        <div
+                          className={`prompt-checkbox ${selectedPromptIds.has(prompt.id) ? "checked" : ""}`}
+                        >
+                          {selectedPromptIds.has(prompt.id) && (
+                            <FiCheck className="checkbox-tick" />
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    <div className="prompt-item-content">
+                      <div className="prompt-item-header">
+                        <h3>{prompt.title}</h3>
+                        <div className="prompt-actions">
                           {showCopyTick === prompt.id ? (
-                              <FiCheck className="action-icon copy-tick-icon" />
+                            <FiCheck className="action-icon copy-tick-icon" />
                           ) : (
-                              <FiCopy
-                                  className="action-icon copy-icon"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleCopyPrompt(prompt);
-                                  }}
-                              />
+                            <FiCopy
+                              className="action-icon copy-icon"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleCopyPrompt(prompt);
+                              }}
+                            />
                           )}
                           {prompt.favorite ? (
-                              <FaStar className="action-icon favorite-icon favorited" />
+                            <FaStar
+                              className={`action-icon favorite-icon favorited ${isManaging ? "clickable" : ""}`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (isManaging) handleToggleFavorite(prompt);
+                              }}
+                            />
                           ) : (
-                              <FaRegStar className="action-icon favorite-icon" />
+                            <FaRegStar
+                              className={`action-icon favorite-icon ${isManaging ? "clickable" : ""}`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (isManaging) handleToggleFavorite(prompt);
+                              }}
+                            />
                           )}
+                        </div>
                       </div>
-                    </div>
-                    <p>
-                      {prompt.text.length > MAX_PROMPT_TEXT_LENGTH
-                        ? prompt.text.substring(0, MAX_PROMPT_TEXT_LENGTH) + '...'
-                        : prompt.text}
-                    </p>
-                    <div className="prompt-timestamp">
-                      {formatTimeAgo(prompt.createdAt)}
+                      <p>
+                        {prompt.text.length > MAX_PROMPT_TEXT_LENGTH
+                          ? prompt.text.substring(0, MAX_PROMPT_TEXT_LENGTH) +
+                            "..."
+                          : prompt.text}
+                      </p>
+                      <div className="prompt-timestamp">
+                        {formatTimeAgo(prompt.createdAt)}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -218,9 +313,31 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
             )}
           </div>
           <div className="modal-footer">
-            <button className="modal-manage-button" onClick={handleManage}>
-              Manage
-            </button>
+            <div className="modal-footer-left-buttons">
+              <button className="modal-manage-button" onClick={handleManage}>
+                {isManaging ? "Done" : "Manage"}
+              </button>
+
+              <button
+                className={`modal-action-button modal-select-all-button ${isManaging ? "" : "modal-action-button-hidden"}`}
+                onClick={handleSelectAll}
+              >
+                Select All
+              </button>
+              <button
+                className={`modal-action-button modal-deselect-button ${isManaging ? "" : "modal-action-button-hidden"}`}
+                onClick={handleDeselectAll}
+              >
+                Deselect
+              </button>
+              <button
+                className={`modal-action-button modal-delete-button ${isManaging ? "" : "modal-action-button-hidden"}`}
+                onClick={handleDeleteSelected}
+                disabled={isDeleteButtonDisabled}
+              >
+                Delete
+              </button>
+            </div>
             <button className="modal-close-button" onClick={onClose}>
               Close
             </button>

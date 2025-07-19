@@ -1,272 +1,431 @@
 /* Modal Overlay */
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.4);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    padding: 20px;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease-out, visibility 0.3s ease-out;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease-out,
+    visibility 0.3s ease-out;
 }
 
 /* Modal Content */
 .modal-content {
-    background-color: #ffffff;
-    border-radius: 1rem;
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
-    width: 90%;
-    max-width: 700px;
-    height: 900px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    font-family: var(--main-font);
-
-    transform: scale(0.95);
-    opacity: 0;
-    transition: transform 0.31s ease-out, opacity 0.3s ease-out;
-    /* Main modal transition */
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
+  width: 90%;
+  max-width: 700px;
+  height: 900px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: var(--main-font);
+  transform: scale(0.95);
+  opacity: 0;
+  transition:
+    transform 0.31s ease-out,
+    opacity 0.3s ease-out;
 }
 
 /* Animation Classes (Controlled by TSX) */
 .modal-overlay.modal-enter {
-    opacity: 1;
-    visibility: visible;
+  opacity: 1;
+  visibility: visible;
 }
 
 .modal-content.modal-enter {
-    transform: scale(1);
-    opacity: 1;
+  transform: scale(1);
+  opacity: 1;
 }
 
 .modal-overlay.modal-exit {
-    opacity: 0;
-    visibility: hidden;
+  opacity: 0;
+  visibility: hidden;
 }
 
 .modal-content.modal-exit {
-    transform: scale(0.95);
-    opacity: 0;
+  transform: scale(0.95);
+  opacity: 0;
 }
 
 /* Modal Header */
 .modal-header {
-    display: flex;
-    align-items: center;
-    padding: 15px 20px 10px;
-    border-bottom: 1px solid #e2e8f0;
-    background-color: #f8f8f8;
+  display: flex;
+  align-items: center;
+  padding: 15px 20px 10px;
+  border-bottom: 1px solid #e2e8f0;
+  background-color: #f8f8f8;
 }
 
 /* Search Input */
 .modal-search-input {
-    flex-grow: 1;
-    padding: 8px 12px;
-    border: 1px solid #e0e0e0;
-    border-radius: 0.5rem;
-    font-size: 0.95rem;
-    color: #333;
-    background-color: #fff;
-    font-family: var(--main-font);
-    outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  flex-grow: 1;
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  color: #333;
+  background-color: #fff;
+  font-family: var(--main-font);
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .modal-search-input::placeholder {
-    color: #9ca3af;
+  color: #9ca3af;
 }
 
 .modal-search-input:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 1px rgba(70, 189, 253, 0.3);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 1px rgba(70, 189, 253, 0.3);
 }
 
 /* Modal Body */
 .modal-body {
-    padding: 20px;
-    overflow-y: auto;
-    flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+  flex-grow: 1;
 }
 
 .error-message {
-    color: var(--error-color);
-    font-size: 0.75rem;
-    margin-top: -6px;
-    margin-bottom: -6px;
-    text-align: left;
-    padding-left: 2px;
-    line-height: 1.1;
+  color: var(--error-color);
+  font-size: 0.75rem;
+  margin-top: -6px;
+  margin-bottom: -6px;
+  text-align: left;
+  padding-left: 2px;
+  line-height: 1.1;
 }
 
 /* Prompt List and Items */
 .prompt-list {
-    display: grid;
-    gap: 15px;
+  display: grid;
+  gap: 15px;
 }
 
 .prompt-item {
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 0.75rem;
-    padding: 15px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    position: relative;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 0.75rem;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }
 
 .prompt-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.prompt-item-content {
+  flex-grow: 1;
+}
+
+.prompt-item.prompt-item-managing {
+  padding-left: 10px;
 }
 
 /* Prompt Item Header */
 .prompt-item-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 5px;
 }
 
 .prompt-item-header h3 {
-    margin: 0;
-    font-size: 1.05rem;
-    color: #333;
-    font-weight: 600;
-    text-align: left;
-    flex-grow: 1;
+  margin: 0;
+  font-size: 1.05rem;
+  color: #333;
+  font-weight: 600;
+  text-align: left;
+  flex-grow: 1;
 }
 
 /* Prompt Actions */
 .prompt-actions {
-    display: flex;
-    gap: 8px;
-    align-items: center;
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
 /* Action Icons */
 .action-icon {
-    font-size: 1.1rem;
-    opacity: 0.9;
-    transition: color 0.2s ease, opacity 0.2s ease;
+  font-size: 1.1rem;
+  opacity: 0.9;
+  transition:
+    color 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .action-icon.copy-icon {
-    color: #888;
-    cursor: pointer;
-    opacity: 0.4;
+  color: #888;
+  cursor: pointer;
+  opacity: 0.7;
 }
 
 .action-icon.copy-icon:hover {
-    color: #000000;
-    opacity: 0.5;
+  color: #000000;
+  opacity: 0.7;
 }
 
+/* Default favorite icon style (view mode, not favorited) */
 .action-icon.favorite-icon {
-    color: #ccc;
-    cursor: default;
+  color: #ccc;
+  cursor: default;
+  opacity: 0.4;
 }
 
+/* Favorite icon style in manage mode (not favorited) */
+.prompt-item.prompt-item-managing .action-icon.favorite-icon:not(.favorited) {
+  cursor: pointer;
+  color: #888;
+  opacity: 0.7;
+}
+
+/* Favorite icon style in manage mode (not favorited) on hover */
+.prompt-item.prompt-item-managing
+  .action-icon.favorite-icon:not(.favorited):hover {
+  color: #333;
+  opacity: 1;
+}
+
+/* Favorited icon style (view mode or manage mode) */
 .action-icon.favorite-icon.favorited {
-    color: gold;
-    opacity: 1;
+  color: gold;
+  opacity: 1;
+}
+
+/* Favorited icon style in manage mode on hover */
+.prompt-item.prompt-item-managing .action-icon.favorite-icon.favorited:hover {
+  color: #ccac00;
+  opacity: 1;
 }
 
 /* New style for copy tick icon */
 .action-icon.copy-tick-icon {
-    color: #28a745;
-    opacity: 0.5;
-    cursor: default;
+  color: #28a745;
+  opacity: 0.5;
+  cursor: default;
 }
-
 
 /* Prompt Item Paragraph */
 .prompt-item p {
-    font-size: 0.85rem;
-    color: #555;
-    line-height: 1.5;
-    margin-bottom: 15px;
-    text-align: left;
-    font-style: normal;
+  font-size: 0.85rem;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 15px;
+  text-align: left;
+  font-style: normal;
 }
 
 /* Prompt Timestamp */
 .prompt-timestamp {
-    position: absolute;
-    bottom: 10px;
-    right: 15px;
-    font-size: 0.75rem;
-    color: var(--primary-color);
-    opacity: 0.9;
+  position: absolute;
+  bottom: 10px;
+  right: 15px;
+  font-size: 0.75rem;
+  color: var(--primary-color);
+  opacity: 0.9;
 }
 
-
 /* Loading/Empty States */
-.modal-body>p {
-    text-align: center;
-    color: #777;
-    margin-top: 20px;
-    font-style: italic;
-    font-size: 0.9rem;
+.modal-body > p {
+  text-align: center;
+  color: #777;
+  margin-top: 20px;
+  font-style: italic;
+  font-size: 0.9rem;
 }
 
 .revalidating-indicator {
-    position: sticky;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 5px 15px;
-    background-color: #e0f7fa;
-    color: #00796b;
-    text-align: center;
-    font-size: 0.8rem;
-    border-top: 1px solid #b2ebf2;
-    z-index: 10;
-    border-radius: 0 0 1rem 1rem;
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 5px 15px;
+  background-color: #e0f7fa;
+  color: #00796b;
+  text-align: center;
+  font-size: 0.8rem;
+  border-top: 1px solid #b2ebf2;
+  z-index: 10;
+  border-radius: 0 0 1rem 1rem;
 }
 
 /* Modal Footer */
 .modal-footer {
-    display: flex;
-    justify-content: space-between;
-    gap: 6px;
-    padding: 10px 15px;
-    border-top: 1px solid #e2e8f0;
-    background-color: #f8f8f8;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  border-top: 1px solid #e2e8f0;
+  background-color: #f8f8f8;
+  gap: 6px;
+  min-height: 50px;
 }
 
+.modal-footer-left-buttons {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+/* Base button styles for modal footer */
 .modal-close-button,
-.modal-manage-button {
-    background-color: #e0e0e0;
-    color: #333;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 0.5rem;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
-    font-family: var(--main-font);
-    outline: none;
+.modal-manage-button,
+.modal-action-button {
+  background-color: #e0e0e0;
+  color: #333;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease,
+    opacity 0.2s ease,
+    width 0.2s ease,
+    padding 0.2s ease,
+    margin 0.2s ease;
+  font-family: var(--main-font);
+  outline: none;
+  width: 70px;
+  white-space: nowrap;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .modal-close-button:hover,
-.modal-manage-button:hover {
-    background-color: #d0d0d0;
-    transform: translateY(-1px);
+.modal-manage-button:hover,
+.modal-action-button:hover {
+  background-color: #d0d0d0;
+  transform: translateY(-1px);
 }
 
 .modal-manage-button {
-    background-color: var(--primary-color);
-    color: white;
+  background-color: var(--primary-color);
+  color: white;
 }
 
 .modal-manage-button:hover {
-    background-color: #0da6fe;
+  background-color: #0da6fe;
+}
+
+/* Specific styles for new action buttons */
+.modal-select-all-button {
+  background-color: #4caf50;
+  color: white;
+}
+
+.modal-select-all-button:hover {
+  background-color: #45a049;
+}
+
+.modal-deselect-button {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.modal-deselect-button:hover {
+  background-color: #d0d0d0;
+}
+
+.modal-delete-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.modal-delete-button:hover {
+  background-color: #da190b;
+}
+
+/* Hidden state for action buttons */
+.modal-action-button-hidden {
+  opacity: 0;
+  width: 0;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Disabled state for delete button */
+.modal-delete-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #f44336;
+  transform: translateY(0);
+}
+
+.modal-delete-button:disabled:hover {
+  opacity: 0.7;
+  background-color: #f44336;
+}
+
+/* Checkbox (circle) styling */
+.prompt-checkbox-container {
+  width: 26px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+.prompt-checkbox {
+  width: 13px;
+  height: 13px;
+  border: 1.5px solid var(--primary-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.prompt-checkbox.checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.prompt-checkbox .checkbox-tick {
+  color: white;
+  font-size: 10px;
+  opacity: 0;
+  transform: scale(0.5);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.prompt-checkbox.checked .checkbox-tick {
+  opacity: 1;
+  transform: scale(1);
 }
