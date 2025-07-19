@@ -1,4 +1,3 @@
-// PromptLibraryModal.tsx
 import '@styles/PromptLibraryModal.css';
 import React, { useEffect, useState } from 'react';
 import { FaRegStar, FaStar } from 'react-icons/fa';
@@ -24,7 +23,7 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
   prompts,
   error,
   isLoading,
-  isValidating,
+  mutate,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [animationClass, setAnimationClass] = useState('');
@@ -48,6 +47,7 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
+    
       if (event.key === 'Escape' && isOpen && !isDetailModalOpen) {
         onClose();
       }
@@ -60,7 +60,7 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
     return () => {
       document.removeEventListener('keydown', handleEscape);
     };
-  }, [isOpen, onClose, isDetailModalOpen]); 
+  }, [isOpen, onClose, isDetailModalOpen]);
 
   useEffect(() => {
     if (showCopyTick) {
@@ -82,6 +82,7 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
   const sortedPrompts = [...filteredPrompts].sort((a, b) => {
     if (a.favorite && !b.favorite) return -1;
     if (!a.favorite && b.favorite) return 1;
+
     const dateA = new Date(a.createdAt).getTime();
     const dateB = new Date(b.createdAt).getTime();
     return dateB - dateA;
@@ -129,9 +130,16 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
     setIsDetailModalOpen(true);
   };
 
-  const closeDetailModal = () => {
+  const closeDetailModalInitiate = () => {
     setIsDetailModalOpen(false);
+  };
+
+  const onDetailModalAnimationComplete = () => {
     setSelectedPrompt(null);
+  };
+
+  const handleUpdateSelectedPromptData = (updatedPrompt: Prompt) => {
+    setSelectedPrompt(updatedPrompt);
   };
 
   if (!isOpen && !isAnimating) {
@@ -173,7 +181,7 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
                   <div
                     key={prompt.id}
                     className="prompt-item"
-                    onClick={() => openDetailModal(prompt)} 
+                    onClick={() => openDetailModal(prompt)}
                   >
                     <div className="prompt-item-header">
                       <h3>{prompt.title}</h3>
@@ -183,7 +191,7 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
                           ) : (
                               <FiCopy
                                   className="action-icon copy-icon"
-                                  onClick={(e) => { 
+                                  onClick={(e) => {
                                     e.stopPropagation();
                                     handleCopyPrompt(prompt);
                                   }}
@@ -208,10 +216,6 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
                 ))}
               </div>
             )}
-
-            {isValidating && !isLoading && prompts && prompts.length > 0 && (
-              <div className="revalidating-indicator">Refreshing library...</div>
-            )}
           </div>
           <div className="modal-footer">
             <button className="modal-manage-button" onClick={handleManage}>
@@ -224,11 +228,16 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
         </div>
       </div>
 
-      <PromptDetailModal
-        isOpen={isDetailModalOpen}
-        onClose={closeDetailModal}
-        prompt={selectedPrompt}
-      />
+      {(isDetailModalOpen || selectedPrompt) && (
+        <PromptDetailModal
+          isOpen={isDetailModalOpen}
+          onClose={closeDetailModalInitiate}
+          onAnimationComplete={onDetailModalAnimationComplete}
+          prompt={selectedPrompt}
+          mutate={mutate}
+          onUpdateSelectedPrompt={handleUpdateSelectedPromptData}
+        />
+      )}
     </>
   );
 };

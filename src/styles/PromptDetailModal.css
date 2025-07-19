@@ -18,19 +18,17 @@
 
 /* Detail Modal Content */
 .detail-modal-content {
-    background-color: #ffffff; 
+    background-color: #ffffff;
     border-radius: 1rem;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15); 
-    width: 90%;
-    max-width: 500px;
-    min-width: 300px;
-    max-height: 80vh;
-    min-height: 250px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    width: 95%;
+    max-width: 600px;
+    min-width: 350px;
+    height: 60vh;
     display: flex;
     flex-direction: column;
-    overflow: hidden; 
+    overflow: hidden;
     font-family: var(--main-font);
-
     transform: scale(0.9);
     opacity: 0;
     transition: transform 0.3s ease-out, opacity 0.3s ease-out;
@@ -57,7 +55,7 @@
     opacity: 0;
 }
 
-/* Header */
+/* Header (Top bar) */
 .detail-modal-header {
     padding: 15px 20px 10px;
     display: flex;
@@ -66,7 +64,7 @@
     gap: 10px;
 }
 
-/* Main Content Area */
+/* Main Content Area (Title and Body Text) */
 .detail-main-content-area {
     padding: 20px;
     overflow-y: auto;
@@ -78,24 +76,125 @@
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+    gap: 5px;
+    transition: border-color 0.3s ease;
 }
 
+/* Border change on edit mode */
+.detail-main-content-area.is-editing {
+    border-color: var(--primary-color);
+    box-shadow: none;
+}
+
+/* Editable Input Fields */
+.detail-title-input,
+.detail-body-textarea {
+    width: 100%;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    outline: none;
+    font-family: var(--main-font);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+    background-color: transparent;
+}
+
+.detail-title-input {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #1e1e1e;
+    line-height: 1.2;
+}
+
+.detail-body-textarea {
+    flex-grow: 1;
+    height: 100%;
+    resize: none;
+    line-height: 1.6;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+/* Focus state for editable fields */
+.detail-title-input:focus,
+.detail-body-textarea:focus {
+    box-shadow: none; }
+
+/* Placeholders */
+.detail-title-input::placeholder,
+.detail-body-textarea::placeholder {
+    color: #b0b0b0;
+    font-size: 1.2rem;
+    font-weight: 400;
+}
+.detail-body-textarea::placeholder {
+    font-size: 0.95rem;
+    font-weight: normal;
+}
+
+
+/* View Mode Text */
 .detail-prompt-title {
-    margin: 0 0 10px 0;
+    margin: 0;
     font-size: 1.2rem;
     color: #1e1e1e;
     font-weight: 700;
     text-align: left;
+    line-height: 1.2;
 }
 
 .detail-prompt-text {
-    margin: 0; 
+    margin: 0;
     font-size: 0.95rem;
     color: #333;
     line-height: 1.6;
     white-space: pre-wrap;
     word-wrap: break-word;
     text-align: left;
+}
+
+/* Empty Warning Message */
+.detail-empty-warning-message {
+  color: var(--error-color);
+  font-size: 0.8rem;
+  text-align: center;
+  box-sizing: border-box;
+  max-height: 0; 
+  overflow: hidden;
+  opacity: 0;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  background-color: transparent;
+  transition: max-height 0.3s ease-out, opacity 0.3s ease-out,
+              border-color 0.3s ease-out, background-color 0.3s ease-out;
+}
+
+.detail-empty-warning-message.show-warning {
+  max-height: 100px; 
+  opacity: 1; 
+}
+
+/* Success Message Styling */
+.detail-success-message {
+  color: var(--success-color, #28a745);
+  font-size: 0.8rem;
+  text-align: center;
+  box-sizing: border-box;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  margin-top: 10px;
+  padding: 8px 12px;
+  transition: max-height 0.3s ease-out, opacity 0.3s ease-out,
+              border-color 0.3s ease-out, background-color 0.3s ease-out;
+}
+
+.detail-success-message.show-success {
+  max-height: 100px; 
+  opacity: 1; 
 }
 
 /* Footer */
@@ -105,8 +204,60 @@
     align-items: center;
     padding: 10px 20px 15px;
     margin-top: 10px;
+    gap: 10px;
 }
 
+/* Edit/Save Button */
+.detail-edit-save-button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease, opacity 0.2s ease;
+    font-family: var(--main-font);
+    outline: none;
+    opacity: 1;
+    width: 70px;
+    text-align: center;
+}
+
+.detail-edit-save-button:hover {
+    background-color: #0da6fe;
+    transform: translateY(-1px);
+}
+
+/* Save button active state */
+.detail-edit-save-button.active-save {
+    background-color: var(--primary-color);
+    color: white;
+    opacity: 1;
+    cursor: pointer;
+}
+
+.detail-edit-save-button.active-save:hover {
+    background-color: #0da6fe;
+    transform: translateY(-1px);
+}
+
+/* Disabled state for Save button (when no changes) */
+.detail-edit-save-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: var(--primary-color);
+    transform: translateY(0);
+}
+
+/* Hover for disabled save button */
+.detail-edit-save-button:disabled:hover {
+    opacity: 0.7;
+    background-color: var(--primary-color);
+}
+
+/* Close Button */
 .detail-modal-close-button {
     background-color: #e0e0e0;
     color: #333;
@@ -119,9 +270,32 @@
     transition: background-color 0.2s ease, transform 0.1s ease;
     font-family: var(--main-font);
     outline: none;
+    width: 70px;
 }
 
 .detail-modal-close-button:hover {
     background-color: #d0d0d0;
+    transform: translateY(-1px);
+}
+
+/* Cancel Button Styling */
+.detail-modal-cancel-button {
+    background-color: #ee6f6f;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    font-family: var(--main-font);
+    outline: none;
+    width: 80px;
+    text-align: center;
+}
+
+.detail-modal-cancel-button:hover {
+    background-color: #c82333;
     transform: translateY(-1px);
 }
