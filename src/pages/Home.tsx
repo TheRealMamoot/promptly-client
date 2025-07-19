@@ -27,6 +27,8 @@ export default function Home() {
   const [isLibraryModalOpen, setIsLibraryModalOpen] = useState(false);
   const [showSaveConfirmationModal, setShowSaveConfirmationModal] =
     useState(false);
+  const [commandKey, setCommandKey] = useState("Ctrl");
+  const [isMobileDevice, setIsMobileDevice] = useState(false);
 
   const {
     data: prompts,
@@ -92,6 +94,7 @@ export default function Home() {
         if (showSaveConfirmationModal) {
           setShowSaveConfirmationModal(false);
         } else if (isLibraryModalOpen) {
+          setIsLibraryModalOpen(false);
         } else {
           setTitle("");
           setMessage("");
@@ -108,6 +111,41 @@ export default function Home() {
       document.removeEventListener("keydown", handleEscape);
     };
   }, [isLibraryModalOpen, showSaveConfirmationModal]);
+
+  useEffect(() => {
+    const platform = navigator.platform.toLowerCase();
+    if (platform.includes("mac")) {
+      setCommandKey("Cmd");
+    } else {
+      setCommandKey("Ctrl");
+    }
+
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isMobile =
+      /android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(
+        userAgent,
+      );
+    setIsMobileDevice(isMobile);
+
+    const handleShortcut = (event: KeyboardEvent) => {
+      if (!isMobileDevice) {
+        const isCtrlCmd = event.ctrlKey || event.metaKey;
+        const isShift = event.shiftKey;
+        const isLKey = event.key.toLowerCase() === "l";
+
+        if (isCtrlCmd && isShift && isLKey) {
+          event.preventDefault();
+          setIsLibraryModalOpen(true);
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleShortcut);
+
+    return () => {
+      document.removeEventListener("keydown", handleShortcut);
+    };
+  }, [isMobileDevice]);
 
   const handleSignOut = async () => {
     try {
@@ -213,6 +251,10 @@ export default function Home() {
     </div>
   );
 
+  const dynamicPlaceholder = isMobileDevice
+    ? "What's on your mind? Write your prompt here..."
+    : `What's on your mind? Write your prompt here...\n\nPress ${commandKey} + Shift + L to open library.`;
+
   return (
     <div className="app-container">
       <header className="header">
@@ -300,7 +342,12 @@ export default function Home() {
                 className="message-icon message-icon-lib"
                 onClick={handleLibrary}
               />
-              {renderTooltip("library", "Open Library")}
+              {!isMobileDevice &&
+                renderTooltip(
+                  "library",
+                  `Open Library (${commandKey} + Shift + L)`,
+                )}
+              {isMobileDevice && renderTooltip("library", "Open Library")}
             </div>
           </div>
         </div>
@@ -309,7 +356,7 @@ export default function Home() {
           className="message-body-input"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="What's on your mind? Write your prompt here..."
+          placeholder={dynamicPlaceholder}
         />
       </div>
 
