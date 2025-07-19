@@ -9,6 +9,7 @@
   justify-content: flex-start;
   align-items: center;
   position: relative;
+  box-sizing: border-box;
 }
 
 /* Header section */
@@ -20,6 +21,14 @@
   margin-bottom: 1rem;
   width: 100%;
   max-width: 900px;
+}
+
+.header .user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  color: #6b7280;
 }
 
 .header .user-info a {
@@ -38,6 +47,7 @@
   transition: background-color 0.3s ease;
   font-family: var(--main-font);
   outline: none;
+  white-space: nowrap;
 }
 
 .header .user-info button:hover,
@@ -53,7 +63,7 @@
   gap: -0.75rem;
   width: 100%;
   max-width: 900px;
-  height: 500px;
+  min-height: 500px;
   padding: 1.25rem;
   border-radius: 1rem;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
@@ -68,12 +78,15 @@
   justify-content: space-between;
   width: 100%;
   padding-bottom: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .message-input-icons {
   display: flex;
   gap: 1rem;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .message-icon {
@@ -135,6 +148,8 @@
 /* Message Title Input */
 .message-title-input {
   flex-grow: 1;
+  flex-shrink: 1;
+  min-width: 0;
   font-size: 25px;
   font-weight: 600;
   color: #333;
@@ -273,5 +288,131 @@
   to {
     transform: translateX(-50%) translateY(0);
     opacity: 1;
+  }
+}
+
+/* --- Media Queries for Responsiveness --- */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 2rem 1rem;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .header .user-info {
+    flex-direction: column;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .header .user-info button {
+    width: 100%;
+    max-width: 150px;
+  }
+
+  .message-input-container {
+    padding: 1rem;
+    min-height: 400px;
+    height: auto;
+    width: 100%;
+    max-width: calc(100% - 2rem);
+    margin: 0 auto;
+  }
+
+  .message-header {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1rem;
+    gap: 0.5rem;
+  }
+
+  .message-title-input {
+    font-size: 20px;
+    flex-basis: 65%;
+  }
+
+  .message-input-icons {
+    flex-basis: auto;
+    justify-content: flex-end;
+    gap: 0.6rem;
+  }
+
+  .message-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  .message-icon-lib {
+    width: 14px;
+    height: 14px;
+  }
+  .message-icon-copy {
+    width: 14.5px;
+    height: 14.5px;
+  }
+  .message-icon-fav {
+    width: 16px;
+    height: 16px;
+  }
+
+  .message-body-input {
+    font-size: 16px;
+  }
+
+  .custom-tooltip {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+  }
+
+  .success-message,
+  .empty-prompt-warning-message {
+    bottom: 2rem;
+    padding: 0.8rem 1.2rem;
+    font-size: 0.9rem;
+    width: 90%;
+    max-width: 300px;
+    text-align: center;
+  }
+}
+
+/* For even smaller screens */
+@media (max-width: 480px) {
+  .app-container {
+    padding: 1.5rem 0.8rem;
+  }
+
+  .header {
+    gap: 0.8rem;
+  }
+
+  .header .user-info {
+    font-size: 0.85rem;
+  }
+
+  .message-input-container {
+    padding: 0.8rem;
+    min-height: 350px;
+    max-width: calc(100% - 1.6rem);
+  }
+
+  .message-title-input {
+    font-size: 18px;
+  }
+
+  .message-body-input {
+    font-size: 15px;
+  }
+
+  .message-input-icons {
+    gap: 0.6rem;
   }
 }

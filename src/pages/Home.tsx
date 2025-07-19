@@ -49,7 +49,7 @@ export default function Home() {
       } catch (error: any) {
         console.error(
           "Authentication check failed, redirecting to login:",
-          error
+          error,
         );
         setUserInfo(null);
         setLoadingUser(false);
@@ -249,7 +249,7 @@ export default function Home() {
               )}
               {renderTooltip(
                 "copy",
-                showCopyTick ? "Copied!" : "Copy to clipboard"
+                showCopyTick ? "Copied!" : "Copy to clipboard",
               )}
             </div>
 
@@ -271,7 +271,7 @@ export default function Home() {
               )}
               {renderTooltip(
                 "favorite",
-                isFavorited ? "Remove from Favorites" : "Add to Favorites"
+                isFavorited ? "Remove from Favorites" : "Add to Favorites",
               )}
             </div>
 

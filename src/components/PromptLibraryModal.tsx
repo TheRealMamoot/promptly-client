@@ -104,8 +104,8 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
           prompt.category.toLowerCase().includes(searchQuery.toLowerCase())) ||
         (prompt.tags &&
           prompt.tags.some((tag) =>
-            tag.toLowerCase().includes(searchQuery.toLowerCase())
-          ))
+            tag.toLowerCase().includes(searchQuery.toLowerCase()),
+          )),
     ) || [];
 
   const sortedPrompts = [...filteredPrompts].sort((a, b) => {
@@ -169,7 +169,7 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
         console.error("Error toggling favorite status:", error);
       }
     },
-    [mutate]
+    [mutate],
   );
 
   const openDetailModal = (prompt: Prompt) => {
@@ -187,6 +187,7 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
 
   const handleUpdateSelectedPromptData = (updatedPrompt: Prompt) => {
     setSelectedPrompt(updatedPrompt);
+    mutate();
   };
 
   const handlePromptSelection = useCallback((promptId: string | number) => {
@@ -232,7 +233,7 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
     } catch (error: any) {
       console.error("Error deleting prompts:", error);
       console.log(
-        `Failed to delete prompts: ${error.message || "Unknown error"}`
+        `Failed to delete prompts: ${error.message || "Unknown error"}`,
       );
       if (error.response) {
         console.error("Error response data:", error.response.data);
@@ -358,20 +359,20 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
               </button>
 
               <button
-                className={`modal-action-button modal-select-all-button ${isManaging ? "" : "modal-action-button-hidden"}`}
+                className={`modal-action-button modal-select-all-button ${!isManaging ? "modal-action-button-hidden" : ""}`}
                 onClick={handleSelectAll}
               >
                 Select All
               </button>
               <button
-                className={`modal-action-button modal-deselect-button ${isManaging ? "" : "modal-action-button-hidden"}`}
+                className={`modal-action-button modal-deselect-button ${!isManaging ? "modal-action-button-hidden" : ""}`}
                 onClick={handleDeselectAll}
               >
                 Deselect
               </button>
               <button
-                className={`modal-action-button modal-delete-button ${isManaging ? "" : "modal-action-button-hidden"}`}
-                onClick={initiateDeleteSelected} // Changed to initiateDeleteSelected
+                className={`modal-action-button modal-delete-button ${!isManaging ? "modal-action-button-hidden" : ""}`}
+                onClick={initiateDeleteSelected}
                 disabled={isDeleteButtonDisabled}
               >
                 Delete
