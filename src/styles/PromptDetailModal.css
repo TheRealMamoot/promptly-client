@@ -5,11 +5,11 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.3); 
+    background-color: rgba(0, 0, 0, 0.3);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1001; 
+    z-index: 1001;
     padding: 20px;
     opacity: 0;
     visibility: hidden;
@@ -160,7 +160,7 @@
   font-size: 0.8rem;
   text-align: center;
   box-sizing: border-box;
-  max-height: 0; 
+  max-height: 0;
   overflow: hidden;
   opacity: 0;
   margin-top: 10px;
@@ -173,8 +173,8 @@
 }
 
 .detail-empty-warning-message.show-warning {
-  max-height: 100px; 
-  opacity: 1; 
+  max-height: 100px;
+  opacity: 1;
 }
 
 /* Success Message Styling */
@@ -193,8 +193,8 @@
 }
 
 .detail-success-message.show-success {
-  max-height: 100px; 
-  opacity: 1; 
+  max-height: 100px;
+  opacity: 1;
 }
 
 /* Footer */
@@ -243,7 +243,7 @@
     transform: translateY(-1px);
 }
 
-/* Disabled state for Save button (when no changes) */
+/* Disabled state for Save button */
 .detail-edit-save-button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -251,7 +251,6 @@
     transform: translateY(0);
 }
 
-/* Hover for disabled save button */
 .detail-edit-save-button:disabled:hover {
     opacity: 0.7;
     background-color: var(--primary-color);
@@ -288,14 +287,26 @@
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
+    transition: background-color 0.2s ease, transform 0.1s ease, opacity 0.2s ease, width 0.2s ease, padding 0.2s ease, margin 0.2s ease;
     font-family: var(--main-font);
     outline: none;
-    width: 80px;
-    text-align: center;
+    width: 70px;
+    opacity: 1;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
 }
 
 .detail-modal-cancel-button:hover {
     background-color: #c82333;
     transform: translateY(-1px);
+}
+
+.detail-modal-cancel-button-hidden {
+    opacity: 0;
+    width: 0;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    transition: opacity 0.2s ease, width 0.2s ease, padding 0.2s ease, margin 0.2s ease;
 }

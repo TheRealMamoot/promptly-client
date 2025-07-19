@@ -5,6 +5,7 @@ import { api, API_ROUTES } from '../config/api';
 import type { Prompt } from '../utils/api';
 
 // todo: smooth out success and warning messages
+// todo: add devider between title and text
 
 interface PromptDetailModalProps {
   isOpen: boolean;
@@ -240,19 +241,20 @@ const PromptDetailModal: React.FC<PromptDetailModalProps> = ({
         </div>
 
         <div className="detail-modal-footer">
+          <button 
+            className={`detail-modal-cancel-button ${isEditing ? '' : 'detail-modal-cancel-button-hidden'}`} 
+            onClick={handleCancelEdit}
+          >
+            Cancel
+          </button>
           {isEditing ? (
-            <>
-              <button className="detail-modal-cancel-button" onClick={handleCancelEdit}>
-                Cancel
-              </button>
-              <button
-                className={`detail-edit-save-button ${hasChanges ? 'active-save' : ''}`}
-                onClick={handleSave}
-                disabled={!hasChanges}
-              >
-                Save
-              </button>
-            </>
+            <button
+              className={`detail-edit-save-button ${hasChanges ? 'active-save' : ''}`}
+              onClick={handleSave}
+              disabled={!hasChanges}
+            >
+              Save
+            </button>
           ) : (
             <button className="detail-edit-save-button" onClick={handleEdit}>
               Edit
