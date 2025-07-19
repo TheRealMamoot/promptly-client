@@ -6,7 +6,11 @@ import type { KeyedMutator } from "swr";
 import { api, API_ROUTES } from "../config/api";
 import type { Prompt } from "../utils/api";
 import { formatTimeAgo } from "../utils/timeFormatter";
+import ConfirmationModal from "./ConfirmationModal";
 import PromptDetailModal from "./PromptDetailModal";
+
+// todo: fix favorite requests
+// todo: fix favortie orders after change
 
 interface PromptLibraryModalProps {
   isOpen: boolean;
@@ -36,6 +40,7 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
   const [selectedPromptIds, setSelectedPromptIds] = useState<
     Set<string | number>
   >(new Set());
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -54,8 +59,12 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && isOpen && !isDetailModalOpen) {
-        if (isManaging) {
+      if (event.key === "Escape" && isOpen) {
+        if (isDetailModalOpen) {
+          closeDetailModalInitiate();
+        } else if (showConfirmationModal) {
+          setShowConfirmationModal(false);
+        } else if (isManaging) {
           setIsManaging(false);
           setSelectedPromptIds(new Set());
         } else {
@@ -71,7 +80,7 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
     return () => {
       document.removeEventListener("keydown", handleEscape);
     };
-  }, [isOpen, onClose, isDetailModalOpen, isManaging]);
+  }, [isOpen, onClose, isDetailModalOpen, isManaging, showConfirmationModal]);
 
   useEffect(() => {
     if (showCopyTick) {
@@ -95,8 +104,8 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
           prompt.category.toLowerCase().includes(searchQuery.toLowerCase())) ||
         (prompt.tags &&
           prompt.tags.some((tag) =>
-            tag.toLowerCase().includes(searchQuery.toLowerCase()),
-          )),
+            tag.toLowerCase().includes(searchQuery.toLowerCase())
+          ))
     ) || [];
 
   const sortedPrompts = [...filteredPrompts].sort((a, b) => {
@@ -160,7 +169,7 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
         console.error("Error toggling favorite status:", error);
       }
     },
-    [mutate],
+    [mutate]
   );
 
   const openDetailModal = (prompt: Prompt) => {
@@ -201,11 +210,41 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
     setSelectedPromptIds(new Set());
   }, []);
 
-  const handleDeleteSelected = useCallback(() => {
-    console.log("Deleting selected prompts:", Array.from(selectedPromptIds));
-    setSelectedPromptIds(new Set());
-    setIsManaging(false);
+  const initiateDeleteSelected = useCallback(() => {
+    if (selectedPromptIds.size === 0) {
+      console.log("No prompts selected for deletion.");
+      return;
+    }
+    setShowConfirmationModal(true);
   }, [selectedPromptIds]);
+
+  const handleConfirmDelete = useCallback(async () => {
+    setShowConfirmationModal(false);
+
+    try {
+      const idsToDelete = Array.from(selectedPromptIds);
+      await api.delete(API_ROUTES.PROMPTS, { data: idsToDelete });
+
+      console.log("Prompts deleted successfully!");
+      setSelectedPromptIds(new Set());
+      setIsManaging(false);
+      mutate();
+    } catch (error: any) {
+      console.error("Error deleting prompts:", error);
+      console.log(
+        `Failed to delete prompts: ${error.message || "Unknown error"}`
+      );
+      if (error.response) {
+        console.error("Error response data:", error.response.data);
+        console.error("Error response status:", error.response.status);
+      }
+    }
+  }, [selectedPromptIds, mutate]);
+
+  const handleCancelDelete = useCallback(() => {
+    setShowConfirmationModal(false);
+    console.log("Deletion cancelled by user.");
+  }, []);
 
   if (!isOpen && !isAnimating) {
     return null;
@@ -332,7 +371,7 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
               </button>
               <button
                 className={`modal-action-button modal-delete-button ${isManaging ? "" : "modal-action-button-hidden"}`}
-                onClick={handleDeleteSelected}
+                onClick={initiateDeleteSelected} // Changed to initiateDeleteSelected
                 disabled={isDeleteButtonDisabled}
               >
                 Delete
@@ -355,6 +394,15 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
           onUpdateSelectedPrompt={handleUpdateSelectedPromptData}
         />
       )}
+
+      <ConfirmationModal
+        isOpen={showConfirmationModal}
+        onClose={handleCancelDelete}
+        onConfirm={handleConfirmDelete}
+        title="Confirm Deletion"
+        message={`Are you sure you want to delete ${selectedPromptIds.size} selected prompt(s)? This action cannot be undone.`}
+        confirmButtonType="delete"
+      />
     </>
   );
 };

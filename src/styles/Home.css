@@ -22,14 +22,6 @@
   max-width: 900px;
 }
 
-/* .header .user-info {
-  font-size: 1rem;
-  color: #6b7280;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-} */
-
 .header .user-info a {
   text-decoration: none;
   color: var(--primary-color);
@@ -52,35 +44,6 @@
 .header .user-info button:focus {
   background-color: #0da6fe;
 }
-
-/* Tag list styling */
-/* .tag-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-  justify-content: center;
-  width: 100%;
-  max-width: 1200px;
-}
-
-.tag {
-  background-color: #ffffff;
-  padding: 8px 14px;
-  border-radius: 16px;
-  border: 1px solid #cbd5e1;
-  font-size: 1rem;
-  color: #6b7280;
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
-  outline: none;
-}
-
-.tag:hover,
-.tag:focus {
-  background-color: var(--primary-color);
-  color: white;
-} */
 
 /* Message Input Section */
 .message-input-container {
@@ -221,58 +184,6 @@
   color: #9ca3af;
 }
 
-/* Action Buttons */
-/* .action-buttons {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin-top: 1.5rem;
-  width: 100%;
-}
-
-.action-buttons button {
-  padding: 12px 20px;
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-family: var(--main-font);
-  outline: none;
-}
-
-.action-buttons button:hover,
-.action-buttons button:focus {
-  background-color: #0da6fe;
-} */
-
-/* Footer section */
-/* .footer {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin-top: 2rem;
-}
-
-.footer button {
-  padding: 12px 20px;
-  border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  background-color: #ffffff;
-  color: #6b7280;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  outline: none;
-}
-
-.footer button:hover,
-.footer button:focus {
-  background-color: #f1f1f1;
-  border-color: #cbd5e1;
-} */
-
 .custom-tooltip {
   position: absolute;
   bottom: calc(100% + 8px);
@@ -308,93 +219,13 @@
   transition-delay: 0.7s;
 }
 
-/* Overlay for the confirmation pop-up */
-.save-confirmation-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  animation: fadeIn 0.2s ease-out;
-}
-
-/* Confirmation Pop-up Box */
-.save-confirmation-popup {
-  background-color: white;
-  padding: 2rem;
-  border-radius: 0.75rem;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  text-align: center;
-  max-width: 350px;
-  width: 90%;
-  transform: translateY(-20px);
-  animation: slideIn 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.save-confirmation-popup p {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #333;
-  margin: 0;
-}
-
-.popup-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-}
-
-.popup-buttons button {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    transform 0.1s ease;
-  font-family: var(--main-font);
-}
-
-.popup-btn-no {
-  background-color: #e0e0e0;
-  color: #333;
-}
-
-.popup-btn-no:hover {
-  background-color: #d0d0d0;
-  transform: translateY(-1px);
-}
-
-.popup-btn-yes {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.popup-btn-yes:hover {
-  background-color: #0da6fe;
-  transform: translateY(-1px);
-}
-
 .success-message {
   position: fixed;
   bottom: 4rem;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #4caf50;
-  color: white;
+  color: #4caf50;
   padding: 1rem 1.5rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   font-size: 1rem;
   font-weight: 500;
   z-index: 1001;
@@ -406,11 +237,8 @@
   bottom: 8rem;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #dc3545;
-  color: white;
+  color: #dc3545;
   padding: 1rem 1.5rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   font-size: 1rem;
   font-weight: 500;
   z-index: 1001;

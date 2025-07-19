@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import useSWR, { mutate as globalMutate } from "swr";
 import LibraryIcon from "../assets/lib.svg";
 import SaveIcon from "../assets/save.svg";
+import ConfirmationModal from "../components/ConfirmationModal";
 import LogoTitle from "../components/LogoTitle";
 import PromptLibraryModal from "../components/PromptLibraryModal";
 import { api, API_ROUTES } from "../config/api";
@@ -20,11 +21,12 @@ export default function Home() {
   const [loadingUser, setLoadingUser] = useState(true);
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
   const [isFavorited, setIsFavorited] = useState(false);
-  const [showSaveConfirmation, setShowSaveConfirmation] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showEmptyPromptWarning, setShowEmptyPromptWarning] = useState(false);
   const [showCopyTick, setShowCopyTick] = useState(false);
   const [isLibraryModalOpen, setIsLibraryModalOpen] = useState(false);
+  const [showSaveConfirmationModal, setShowSaveConfirmationModal] =
+    useState(false);
 
   const {
     data: prompts,
@@ -47,7 +49,7 @@ export default function Home() {
       } catch (error: any) {
         console.error(
           "Authentication check failed, redirecting to login:",
-          error,
+          error
         );
         setUserInfo(null);
         setLoadingUser(false);
@@ -84,6 +86,29 @@ export default function Home() {
     }
   }, [showCopyTick]);
 
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        if (showSaveConfirmationModal) {
+          setShowSaveConfirmationModal(false);
+        } else if (isLibraryModalOpen) {
+        } else {
+          setTitle("");
+          setMessage("");
+          setIsFavorited(false);
+          setShowEmptyPromptWarning(false);
+          setShowSuccessMessage(false);
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [isLibraryModalOpen, showSaveConfirmationModal]);
+
   const handleSignOut = async () => {
     try {
       await api.post(API_ROUTES.LOGOUT);
@@ -103,7 +128,7 @@ export default function Home() {
       setShowEmptyPromptWarning(true);
       return;
     }
-    setShowSaveConfirmation(true);
+    setShowSaveConfirmationModal(true);
     setActiveTooltip(null);
   };
 
@@ -123,7 +148,7 @@ export default function Home() {
       setActiveTooltip(null);
     } catch (err) {
       console.error("Failed to copy text: ", err);
-      alert("Failed to copy text to clipboard.");
+      console.log("Failed to copy text to clipboard.");
     }
   };
 
@@ -136,8 +161,8 @@ export default function Home() {
     setActiveTooltip(null);
   };
 
-  const confirmSave = async () => {
-    setShowSaveConfirmation(false);
+  const handleConfirmSave = async () => {
+    setShowSaveConfirmationModal(false);
 
     try {
       const response = await api.post(API_ROUTES.PROMPTS, {
@@ -159,12 +184,13 @@ export default function Home() {
       }, 100);
     } catch (error: any) {
       console.error("Error saving prompt:", error);
-      alert("Failed to save prompt. Please try again.");
+      console.log("Failed to save prompt. Please try again.");
     }
   };
 
-  const cancelSave = () => {
-    setShowSaveConfirmation(false);
+  const handleCancelSave = () => {
+    setShowSaveConfirmationModal(false);
+    console.log("Save cancelled by user.");
   };
 
   if (loadingUser) {
@@ -223,7 +249,7 @@ export default function Home() {
               )}
               {renderTooltip(
                 "copy",
-                showCopyTick ? "Copied!" : "Copy to clipboard",
+                showCopyTick ? "Copied!" : "Copy to clipboard"
               )}
             </div>
 
@@ -245,7 +271,7 @@ export default function Home() {
               )}
               {renderTooltip(
                 "favorite",
-                isFavorited ? "Remove from Favorites" : "Add to Favorites",
+                isFavorited ? "Remove from Favorites" : "Add to Favorites"
               )}
             </div>
 
@@ -287,21 +313,14 @@ export default function Home() {
         />
       </div>
 
-      {showSaveConfirmation && (
-        <div className="save-confirmation-overlay">
-          <div className="save-confirmation-popup">
-            <p>Save prompt and add to library?</p>
-            <div className="popup-buttons">
-              <button onClick={cancelSave} className="popup-btn-no">
-                No
-              </button>
-              <button onClick={confirmSave} className="popup-btn-yes">
-                Yes
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmationModal
+        isOpen={showSaveConfirmationModal}
+        onClose={handleCancelSave}
+        onConfirm={handleConfirmSave}
+        title="Confirm Save"
+        message="Save this prompt and add it to your library?"
+        confirmButtonType="save"
+      />
 
       {showSuccessMessage && (
         <div className="success-message">Prompt saved!</div>
@@ -309,7 +328,7 @@ export default function Home() {
 
       {showEmptyPromptWarning && (
         <div className="empty-prompt-warning-message">
-          Please enter the title and the prmopt before saving.
+          Please enter the title and the prompt before saving.
         </div>
       )}
 
