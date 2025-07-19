@@ -6,7 +6,7 @@ import type { Prompt } from "../utils/api";
 
 // todo: smooth out success and warning messages
 // todo: add devider between title and text
-// todo: add escape to cancel edit mode without existing the modal
+// todo: add escape to cancel edit mode without existing the modal - maybe w/ pop up message
 
 interface PromptDetailModalProps {
   isOpen: boolean;

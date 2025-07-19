@@ -93,12 +93,7 @@ export default function Home() {
       if (event.key === "Escape") {
         if (showSaveConfirmationModal) {
           setShowSaveConfirmationModal(false);
-        } else if (isLibraryModalOpen) {
-          setIsLibraryModalOpen(false);
         } else {
-          setTitle("");
-          setMessage("");
-          setIsFavorited(false);
           setShowEmptyPromptWarning(false);
           setShowSuccessMessage(false);
         }
@@ -186,7 +181,6 @@ export default function Home() {
       setActiveTooltip(null);
     } catch (err) {
       console.error("Failed to copy text: ", err);
-      console.log("Failed to copy text to clipboard.");
     }
   };
 
@@ -222,13 +216,11 @@ export default function Home() {
       }, 100);
     } catch (error: any) {
       console.error("Error saving prompt:", error);
-      console.log("Failed to save prompt. Please try again.");
     }
   };
 
   const handleCancelSave = () => {
     setShowSaveConfirmationModal(false);
-    console.log("Save cancelled by user.");
   };
 
   if (loadingUser) {
@@ -253,7 +245,7 @@ export default function Home() {
 
   const dynamicPlaceholder = isMobileDevice
     ? "What's on your mind? Write your prompt here..."
-    : `What's on your mind? Write your prompt here...\n\nPress ${commandKey} + Shift + L to open library.`;
+    : `What's on your mind? Write your prompt here...\nPress ${commandKey} + Shift + L to open your library.`;
 
   return (
     <div className="app-container">

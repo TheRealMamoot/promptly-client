@@ -227,6 +227,7 @@
 
 /* New style for copy tick icon */
 .action-icon.copy-tick-icon {
+  font-size: 0.8rem;
   color: #28a745;
   opacity: 0.5;
   cursor: default;
