@@ -310,7 +310,7 @@
     margin 0.2s ease;
   font-family: var(--main-font);
   outline: none;
-  width: 70px;
+  width: 80px;
   white-space: nowrap;
   text-align: center;
   display: flex;

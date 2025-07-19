@@ -1,9 +1,9 @@
 :root {
   --primary-color: #46bdfd;
-  --seondary-color: #9DCDFE;
+  --seondary-color: #9dcdfe;
   --error-color: #e63946;
   --button-hover-color: #0da6fe;
-  --main-font: 'Quicksand', sans-serif;
+  --main-font: "Quicksand", sans-serif;
 }
 
 body {

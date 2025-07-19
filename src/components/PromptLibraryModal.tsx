@@ -95,8 +95,8 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
           prompt.category.toLowerCase().includes(searchQuery.toLowerCase())) ||
         (prompt.tags &&
           prompt.tags.some((tag) =>
-            tag.toLowerCase().includes(searchQuery.toLowerCase())
-          ))
+            tag.toLowerCase().includes(searchQuery.toLowerCase()),
+          )),
     ) || [];
 
   const sortedPrompts = [...filteredPrompts].sort((a, b) => {
@@ -160,7 +160,7 @@ const PromptLibraryModal: React.FC<PromptLibraryModalProps> = ({
         console.error("Error toggling favorite status:", error);
       }
     },
-    [mutate]
+    [mutate],
   );
 
   const openDetailModal = (prompt: Prompt) => {

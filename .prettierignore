@@ -1,0 +1,40 @@
+# artifacts
+build/
+dist/
+out/
+.next/
+.parcel-cache/
+coverage/
+
+# node_modules
+node_modules/
+
+# logs and temporary files
+*.log
+*.tmp
+.DS_Store
+.env
+
+# minified files
+*.min.js
+*.min.css
+
+# lockfiles
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# editor-specific files
+.vscode/
+.idea/
+
+# specific asset types
+*.svg
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# database files
+*.db
+*.sqlite

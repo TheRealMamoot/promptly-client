@@ -1,21 +1,21 @@
-import '@/styles/Home.css';
-import { useEffect, useState } from 'react';
-import { FaRegStar, FaStar } from 'react-icons/fa';
-import { FiCheck, FiCopy } from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
-import useSWR, { mutate as globalMutate } from 'swr';
-import LibraryIcon from '../assets/lib.svg';
-import SaveIcon from '../assets/save.svg';
-import LogoTitle from '../components/LogoTitle';
-import PromptLibraryModal from '../components/PromptLibraryModal';
-import { api, API_ROUTES } from '../config/api';
-import type { Prompt } from '../utils/api';
-import { fetcher } from '../utils/api';
+import "@/styles/Home.css";
+import { useEffect, useState } from "react";
+import { FaRegStar, FaStar } from "react-icons/fa";
+import { FiCheck, FiCopy } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+import useSWR, { mutate as globalMutate } from "swr";
+import LibraryIcon from "../assets/lib.svg";
+import SaveIcon from "../assets/save.svg";
+import LogoTitle from "../components/LogoTitle";
+import PromptLibraryModal from "../components/PromptLibraryModal";
+import { api, API_ROUTES } from "../config/api";
+import type { Prompt } from "../utils/api";
+import { fetcher } from "../utils/api";
 
 export default function Home() {
   const navigate = useNavigate();
-  const [message, setMessage] = useState('');
-  const [title, setTitle] = useState('');
+  const [message, setMessage] = useState("");
+  const [title, setTitle] = useState("");
   const [userInfo, setUserInfo] = useState<any>(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
@@ -31,16 +31,12 @@ export default function Home() {
     error: promptsError,
     isLoading: promptsLoading,
     isValidating: promptsValidating,
-    mutate: promptsMutate
-  } = useSWR<Prompt[]>(
-    userInfo ? API_ROUTES.PROMPTS : null,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-      revalidateOnMount: true,
-    }
-  );
+    mutate: promptsMutate,
+  } = useSWR<Prompt[]>(userInfo ? API_ROUTES.PROMPTS : null, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+    revalidateOnMount: true,
+  });
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -49,10 +45,13 @@ export default function Home() {
         setUserInfo(response.data.user);
         setLoadingUser(false);
       } catch (error: any) {
-        console.error('Authentication check failed, redirecting to login:', error);
+        console.error(
+          "Authentication check failed, redirecting to login:",
+          error,
+        );
         setUserInfo(null);
         setLoadingUser(false);
-        navigate('/login');
+        navigate("/login");
       }
     };
     fetchUserInfo();
@@ -90,19 +89,19 @@ export default function Home() {
       await api.post(API_ROUTES.LOGOUT);
       setUserInfo(null);
       globalMutate(API_ROUTES.PROMPTS, null, false);
-      navigate('/login');
+      navigate("/login");
     } catch (error) {
-      console.error('Error during logout API call:', error);
+      console.error("Error during logout API call:", error);
       setUserInfo(null);
       globalMutate(API_ROUTES.PROMPTS, null, false);
-      navigate('/login');
+      navigate("/login");
     }
   };
 
   const handleSave = () => {
-    if (title.trim() === '' || message.trim() === '') {
-        setShowEmptyPromptWarning(true);
-        return;
+    if (title.trim() === "" || message.trim() === "") {
+      setShowEmptyPromptWarning(true);
+      return;
     }
     setShowSaveConfirmation(true);
     setActiveTooltip(null);
@@ -111,25 +110,25 @@ export default function Home() {
   const handleCopy = async () => {
     try {
       const textToCopy = `Title: ${title}\nPrompt: ${message}`;
-      const textarea = document.createElement('textarea');
+      const textarea = document.createElement("textarea");
       textarea.value = textToCopy;
-      textarea.style.position = 'fixed';
+      textarea.style.position = "fixed";
       document.body.appendChild(textarea);
       textarea.focus();
       textarea.select();
-      document.execCommand('copy');
+      document.execCommand("copy");
       document.body.removeChild(textarea);
 
       setShowCopyTick(true);
       setActiveTooltip(null);
     } catch (err) {
-      console.error('Failed to copy text: ', err);
-      alert('Failed to copy text to clipboard.');
+      console.error("Failed to copy text: ", err);
+      alert("Failed to copy text to clipboard.");
     }
   };
 
   const handleFavorite = () => {
-    setIsFavorited(prev => !prev);
+    setIsFavorited((prev) => !prev);
   };
 
   const handleLibrary = () => {
@@ -140,30 +139,29 @@ export default function Home() {
   const confirmSave = async () => {
     setShowSaveConfirmation(false);
 
-  try {
-    const response = await api.post(API_ROUTES.PROMPTS, {
-      title: title,
-      text: message,
-      favorite: isFavorited,
-    });
+    try {
+      const response = await api.post(API_ROUTES.PROMPTS, {
+        title: title,
+        text: message,
+        favorite: isFavorited,
+      });
 
-    console.log('Prompt saved successfully:', response.data);
+      console.log("Prompt saved successfully:", response.data);
 
-    setTitle('');
-    setMessage('');
-    setIsFavorited(false);
+      setTitle("");
+      setMessage("");
+      setIsFavorited(false);
 
-    promptsMutate();
+      promptsMutate();
 
-    setTimeout(() => {
-      setShowSuccessMessage(true);
-    }, 100);
-
-  } catch (error: any) {
-    console.error('Error saving prompt:', error);
-    alert('Failed to save prompt. Please try again.');
-  }
-};
+      setTimeout(() => {
+        setShowSuccessMessage(true);
+      }, 100);
+    } catch (error: any) {
+      console.error("Error saving prompt:", error);
+      alert("Failed to save prompt. Please try again.");
+    }
+  };
 
   const cancelSave = () => {
     setShowSaveConfirmation(false);
@@ -183,11 +181,11 @@ export default function Home() {
     return null;
   }
 
-const renderTooltip = (id: string, text: string) => (
-  <div className={`custom-tooltip ${activeTooltip === id ? 'visible' : ''}`}>
-    {text}
-  </div>
-);
+  const renderTooltip = (id: string, text: string) => (
+    <div className={`custom-tooltip ${activeTooltip === id ? "visible" : ""}`}>
+      {text}
+    </div>
+  );
 
   return (
     <div className="app-container">
@@ -207,10 +205,11 @@ const renderTooltip = (id: string, text: string) => (
             placeholder="Enter a title..."
           />
           <div className="message-input-icons">
-
-            <div className="icon-wrapper"
-                 onMouseEnter={() => setActiveTooltip('copy')}
-                 onMouseLeave={() => setActiveTooltip(null)}>
+            <div
+              className="icon-wrapper"
+              onMouseEnter={() => setActiveTooltip("copy")}
+              onMouseLeave={() => setActiveTooltip(null)}
+            >
               {showCopyTick ? (
                 <FiCheck
                   className="message-icon copy-tick-icon"
@@ -222,12 +221,17 @@ const renderTooltip = (id: string, text: string) => (
                   onClick={handleCopy}
                 />
               )}
-              {renderTooltip('copy', showCopyTick ? 'Copied!' : 'Copy to clipboard')}
+              {renderTooltip(
+                "copy",
+                showCopyTick ? "Copied!" : "Copy to clipboard",
+              )}
             </div>
 
-            <div className="icon-wrapper"
-                 onMouseEnter={() => setActiveTooltip('favorite')}
-                 onMouseLeave={() => setActiveTooltip(null)}>
+            <div
+              className="icon-wrapper"
+              onMouseEnter={() => setActiveTooltip("favorite")}
+              onMouseLeave={() => setActiveTooltip(null)}
+            >
               {isFavorited ? (
                 <FaStar
                   className="message-icon message-icon-fav favorited"
@@ -239,28 +243,39 @@ const renderTooltip = (id: string, text: string) => (
                   onClick={handleFavorite}
                 />
               )}
-              {renderTooltip('favorite', isFavorited ? 'Remove from Favorites' : 'Add to Favorites')}
+              {renderTooltip(
+                "favorite",
+                isFavorited ? "Remove from Favorites" : "Add to Favorites",
+              )}
             </div>
 
-            <div className="icon-wrapper"
-                 onMouseEnter={() => setActiveTooltip('save')}
-                 onMouseLeave={() => setActiveTooltip(null)}>
-              <img src={SaveIcon} alt="Save" className="message-icon" onClick={handleSave} />
-              {renderTooltip('save', 'Save to Library')}
+            <div
+              className="icon-wrapper"
+              onMouseEnter={() => setActiveTooltip("save")}
+              onMouseLeave={() => setActiveTooltip(null)}
+            >
+              <img
+                src={SaveIcon}
+                alt="Save"
+                className="message-icon"
+                onClick={handleSave}
+              />
+              {renderTooltip("save", "Save to Library")}
             </div>
 
-            <div className="icon-wrapper"
-                 onMouseEnter={() => setActiveTooltip('library')}
-                 onMouseLeave={() => setActiveTooltip(null)}>
+            <div
+              className="icon-wrapper"
+              onMouseEnter={() => setActiveTooltip("library")}
+              onMouseLeave={() => setActiveTooltip(null)}
+            >
               <img
                 src={LibraryIcon}
                 alt="Library"
                 className="message-icon message-icon-lib"
                 onClick={handleLibrary}
               />
-              {renderTooltip('library', 'Open Library')}
+              {renderTooltip("library", "Open Library")}
             </div>
-
           </div>
         </div>
         <div className="message-divider"></div>
@@ -277,17 +292,19 @@ const renderTooltip = (id: string, text: string) => (
           <div className="save-confirmation-popup">
             <p>Save prompt and add to library?</p>
             <div className="popup-buttons">
-              <button onClick={cancelSave} className="popup-btn-no">No</button>
-              <button onClick={confirmSave} className="popup-btn-yes">Yes</button>
+              <button onClick={cancelSave} className="popup-btn-no">
+                No
+              </button>
+              <button onClick={confirmSave} className="popup-btn-yes">
+                Yes
+              </button>
             </div>
           </div>
         </div>
       )}
 
       {showSuccessMessage && (
-        <div className="success-message">
-          Prompt saved!
-        </div>
+        <div className="success-message">Prompt saved!</div>
       )}
 
       {showEmptyPromptWarning && (
