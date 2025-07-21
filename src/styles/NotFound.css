@@ -1,0 +1,61 @@
+.not-found-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background-color, #f9f9f9);
+  padding: 2rem;
+  font-family: var(--main-font);
+  color: var(--text-color, #222);
+}
+
+.not-found-card {
+  background-color: white;
+  padding: 3rem;
+  border-radius: 12px;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.1),
+    0 10px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 480px;
+  width: 100%;
+}
+
+.not-found-h1 {
+  font-size: 4rem;
+  font-weight: bolder;
+  color: var(--primary-color, #46bdfd);
+  margin-bottom: 1rem;
+}
+
+.not-found-h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--text-color, #222);
+  margin-bottom: 1rem;
+}
+
+.not-found-p {
+  color: var(--text-color-secondary, #555);
+  margin-bottom: 2rem;
+  font-size: 1.125rem;
+}
+
+.not-found-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid transparent;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  color: white;
+  background-color: var(--primary-color, #46bdfd);
+  transition: background-color 0.2s ease-in-out;
+  text-decoration: none;
+}
+
+.not-found-button:hover {
+  background-color: var(--button-hover-color, #0da6fe);
+}
