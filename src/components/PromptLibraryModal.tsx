@@ -11,6 +11,7 @@ import PromptDetailModal from "./PromptDetailModal";
 
 // todo: fix favorite requests
 // todo: fix favortie orders after change
+// todo: add event listener to close library after mouse click outside of the modal
 
 interface PromptLibraryModalProps {
   isOpen: boolean;
