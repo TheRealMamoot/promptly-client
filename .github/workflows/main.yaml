@@ -1,0 +1,59 @@
+name: Frontend CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/**"
+      - "public/**"
+      - "index.html"
+      - "package.json"
+      - "package-lock.json"
+      - "vite.config.ts"
+      - ".github/workflows/main.yml"
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.17.0
+          cache: "npm"
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Lint Code
+        run: npm run lint || true
+
+      - name: Prettify Code
+        run: npm run check-format || true
+
+      - name: Run Frontend Tests
+        run: npm test
+
+  deploy:
+    runs-on: ubuntu-latest
+    container: ghcr.io/railwayapp/cli:latest
+    needs: build-test
+    if: success()
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      SVC_ID: ${{ secrets.RAILWAY_SVC_ID }}
+
+    steps:
+      - name: Checkout code (for deployment context)
+        uses: actions/checkout@v4
+
+      - name: Deploy to Railway
+        run: railway up --service=${{ env.SVC_ID }}
