@@ -1,5 +1,3 @@
-![Version](https://img.shields.io/github/v/release/TheRealMamoot/promptly-client?label=version&color=blue&logo=github)
-
 # 🎨 Promptly – Frontend App
 
 The frontend for **Promptly**, a modern prompt management app that allows users to create, explore, favorite, and manage prompt ideas. This SPA interfaces with the backend API and is part of a **two-repository** full-stack architecture.
