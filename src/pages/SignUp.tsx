@@ -1,12 +1,14 @@
 import "@styles/SignUp.css";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import GoogleIcon from "../assets/google.svg";
 import { api, API_ROUTES } from "../config/api";
 import { SIGNUP_TEXT } from "../constants/text";
 import { UserSchema } from "../validation/userSchema";
 
 function SignUp() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -22,6 +24,8 @@ function SignUp() {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     setTouched({ ...touched, [name]: true });
+
+    setApiError("");
 
     const partial = { ...formData, [name]: value };
     const result = UserSchema.safeParse(partial);
@@ -65,6 +69,7 @@ function SignUp() {
 
       console.log(SIGNUP_TEXT.logs.success, response.data);
       setFormData({ name: "", email: "", password: "", confirmPassword: "" });
+      navigate("/home");
     } catch (error: any) {
       console.error(SIGNUP_TEXT.logs.failure, error);
 
@@ -98,7 +103,6 @@ function SignUp() {
     <>
       <div className="signup-wrapper">
         <div className="signup-tab">
-          {/* <h2 className="signup-title">Start {SIGNUP_TEXT.title}</h2> */}
           <h2 className="signup-title">
             Start{" "}
             <a href="/" className="signup-title-link">
@@ -167,7 +171,10 @@ function SignUp() {
             <div className="divider">
               <span>or</span>
             </div>
-            <button className="google-button">
+            <button
+              className="google-button"
+              onClick={() => alert("Google sign-up is not implemented yet.")}
+            >
               <img src={GoogleIcon} alt="Google" /> Sign up with Google
             </button>
             <p className="terms">
