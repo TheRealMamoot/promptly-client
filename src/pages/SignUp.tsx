@@ -24,7 +24,6 @@ function SignUp() {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
     setTouched({ ...touched, [name]: true });
-
     setApiError("");
 
     const partial = { ...formData, [name]: value };
@@ -68,7 +67,7 @@ function SignUp() {
       });
 
       console.log(SIGNUP_TEXT.logs.success, response.data);
-      
+
       await api.post(API_ROUTES.LOGIN, {
         email: formData.email,
         password: formData.password,
