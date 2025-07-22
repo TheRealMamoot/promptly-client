@@ -227,10 +227,15 @@ describe("Sign Up Page (Basic Tests)", () => {
       name: SIGNUP_TEXT.button,
     });
 
-    (mockedApi.post as ReturnType<typeof vi.fn>).mockResolvedValue({
-      status: 201,
-      data: { message: "User created" },
-    });
+    (mockedApi.post as ReturnType<typeof vi.fn>)
+      .mockResolvedValueOnce({
+        status: 201,
+        data: { message: "User registered successfully" },
+      })
+      .mockResolvedValueOnce({
+        status: 200,
+        data: { message: "User logged in successfully" },
+      });
 
     await user.type(nameInput, "Test User");
     await user.type(emailInput, "test@example.com");
@@ -239,9 +244,13 @@ describe("Sign Up Page (Basic Tests)", () => {
 
     await user.click(signUpButton);
 
-    expect(mockedApi.post).toHaveBeenCalledTimes(1);
+    expect(mockedApi.post).toHaveBeenCalledTimes(2);
     expect(mockedApi.post).toHaveBeenCalledWith(API_ROUTES.REGISTER, {
       name: "Test User",
+      email: "test@example.com",
+      password: "SecureP@ss1",
+    });
+    expect(mockedApi.post).toHaveBeenCalledWith(API_ROUTES.LOGIN, {
       email: "test@example.com",
       password: "SecureP@ss1",
     });
