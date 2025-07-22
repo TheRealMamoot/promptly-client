@@ -68,6 +68,12 @@ function SignUp() {
       });
 
       console.log(SIGNUP_TEXT.logs.success, response.data);
+      
+      await api.post(API_ROUTES.LOGIN, {
+        email: formData.email,
+        password: formData.password,
+      });
+
       setFormData({ name: "", email: "", password: "", confirmPassword: "" });
       navigate("/home");
     } catch (error: any) {
